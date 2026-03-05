@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Is It a Sport?</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a26;
+      --border: #2a2a40;
+      --accent: #6c63ff;
+      --accent2: #ff6b6b;
+      --yes: #22d3a0;
+      --no: #ff5c5c;
+      --text: #e8e8f0;
+      --muted: #7070a0;
+      --glow: rgba(108, 99, 255, 0.3);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-x: hidden;
+    }
+
+    /* ── Animated background grid ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(108,99,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .header h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header p {
+      color: var(--muted);
+      margin-top: 8px;
+      font-size: 0.95rem;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 36px;
+      box-shadow: 0 0 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .card.fade-out { opacity: 0; transform: translateY(-12px) scale(0.98); }
+    .card.fade-in  { animation: fadeIn 0.35s ease forwards; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0)   scale(1); }
+    }
+
+    /* ── Intro screen ── */
+    #screen-intro .activity-input-wrap {
+      margin: 28px 0 24px;
+    }
+    #screen-intro label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    #activity-input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding: 16px 20px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #activity-input::placeholder { color: var(--muted); font-weight: 400; }
+    #activity-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--glow);
+    }
+    #activity-input.shake {
+      animation: shake 0.4s ease;
+      border-color: var(--no);
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      40%      { transform: translateX(6px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
+    }
+
+    .intro-desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      padding: 16px 32px;
+      transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+      user-select: none;
+    }
+    .btn:active { transform: scale(0.96); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #9b5de5);
+      color: #fff;
+      width: 100%;
+      font-size: 1.05rem;
+      box-shadow: 0 4px 24px var(--glow);
+    }
+    .btn-primary:hover { filter: brightness(1.12); box-shadow: 0 6px 32px var(--glow); }
+
+    .answer-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 32px;
+    }
+    .btn-yes {
+      background: linear-gradient(135deg, #22d3a0, #0aad80);
+      color: #fff;
+      font-size: 1.15rem;
+      box-shadow: 0 4px 20px rgba(34,211,160,0.25);
+    }
+    .btn-yes:hover { filter: brightness(1.1); box-shadow: 0 6px 28px rgba(34,211,160,0.35); }
+
+    .btn-no {
+      background: linear-gradient(135deg, #ff5c5c, #d63031);
+      color: #fff;
+      font-size: 1.15rem;
+      box-shadow: 0 4px 20px rgba(255,92,92,0.25);
+    }
+    .btn-no:hover { filter: brightness(1.1); box-shadow: 0 6px 28px rgba(255,92,92,0.35); }
+
+    .btn-restart {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      margin-top: 16px;
+      width: 100%;
+    }
+    .btn-restart:hover { background: var(--border); }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      margin-bottom: 28px;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .progress-track {
+      background: var(--surface2);
+      border-radius: 99px;
+      height: 6px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), #9b5de5);
+      transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 0 10px var(--glow);
+    }
+
+    /* ── Dots ── */
+    .dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      transition: background 0.25s, border-color 0.25s, transform 0.25s;
+    }
+    .dot.active    { background: var(--accent); border-color: var(--accent); transform: scale(1.3); box-shadow: 0 0 8px var(--glow); }
+    .dot.answered-yes { background: var(--yes); border-color: var(--yes); }
+    .dot.answered-no  { background: var(--no);  border-color: var(--no); }
+
+    /* ── Question ── */
+    .q-number {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .q-text {
+      font-size: clamp(1.05rem, 3vw, 1.3rem);
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .q-icon {
+      font-size: 2.8rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    /* ── Activity badge ── */
+    .activity-badge {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 6px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      margin-bottom: 24px;
+    }
+
+    /* ── Verdict screen ── */
+    .verdict-icon {
+      font-size: 5rem;
+      display: block;
+      text-align: center;
+      margin-bottom: 8px;
+      animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.5); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .verdict-title {
+      text-align: center;
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .verdict-score {
+      text-align: center;
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+    .verdict-score strong { color: var(--text); font-size: 1.3rem; }
+
+    /* Score ring */
+    .score-ring-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+    .score-ring {
+      position: relative;
+      width: 120px;
+      height: 120px;
+    }
+    .score-ring svg {
+      transform: rotate(-90deg);
+    }
+    .score-ring-bg {
+      fill: none;
+      stroke: var(--surface2);
+      stroke-width: 10;
+    }
+    .score-ring-fill {
+      fill: none;
+      stroke-width: 10;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1);
+    }
+    .score-ring-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+    .score-ring-text .big { font-size: 2rem; line-height: 1; }
+    .score-ring-text .small { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* Answer breakdown */
+    .breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+    .breakdown-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+      animation: slideIn 0.3s ease both;
+    }
+    @keyframes slideIn {
+      from { opacity:0; transform: translateX(-10px); }
+      to   { opacity:1; transform: translateX(0); }
+    }
+    .breakdown-item .bi-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--muted);
+      width: 16px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .breakdown-item .bi-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .breakdown-item .bi-label {
+      flex: 1;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .breakdown-item .bi-answer {
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+    }
+
+    /* Verdict tiers */
+    .tier-0 .verdict-title { color: var(--muted); }
+    .tier-1 .verdict-title { color: var(--yes); }
+    .tier-2 .verdict-title {
+      background: linear-gradient(135deg, #22d3a0, var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .tier-3 .verdict-title {
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* Confetti canvas */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ── Utils ── */
+    .hidden { display: none !important; }
+
+    @media (max-width: 480px) {
+      .card { padding: 28px 20px; }
+      .answer-btns { gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+<canvas id="confetti-canvas"></canvas>
+<div class="app">
+  <div class="header">
+    <h1>Is It a Sport?</h1>
+    <p>10 questions. Definitive verdict.</p>
+  </div>
+
+  <!-- ── INTRO SCREEN ── -->
+  <div class="card fade-in" id="screen-intro">
+    <p class="intro-desc">
+      Enter any activity below and answer 10 yes/no questions. We'll tell you — definitively — whether it's a sport.
+    </p>
+    <div class="activity-input-wrap">
+      <label for="activity-input">What's the activity?</label>
+      <input id="activity-input" type="text" placeholder="e.g. Golf, Pickleball, Chess…" autocomplete="off" spellcheck="false" />
+    </div>
+    <button class="btn btn-primary" id="btn-start">
+      Start Quiz →
+    </button>
+  </div>
+
+  <!-- ── QUESTION SCREEN ── -->
+  <div class="card hidden" id="screen-question">
+    <div class="activity-badge" id="q-activity-badge"></div>
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span id="q-progress-label">Question 1 of 10</span>
+        <span id="q-yes-count">0 yes</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+      <div class="dots" id="dots-container"></div>
+    </div>
+    <span class="q-icon" id="q-icon"></span>
+    <div class="q-number" id="q-number">CRITERION 1</div>
+    <div class="q-text" id="q-text"></div>
+    <div class="answer-btns">
+      <button class="btn btn-yes" id="btn-yes">👍 Yes</button>
+      <button class="btn btn-no"  id="btn-no">👎 No</button>
+    </div>
+  </div>
+
+  <!-- ── VERDICT SCREEN ── -->
+  <div class="card hidden" id="screen-verdict">
+    <span class="verdict-icon" id="verdict-icon"></span>
+    <div class="verdict-title" id="verdict-title"></div>
+    <div class="verdict-score" id="verdict-score"></div>
+    <div class="score-ring-wrap">
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120" width="120" height="120">
+          <circle class="score-ring-bg" cx="60" cy="60" r="50"/>
+          <circle class="score-ring-fill" id="ring-fill" cx="60" cy="60" r="50"
+            stroke-dasharray="314"
+            stroke-dashoffset="314"
+          />
+        </svg>
+        <div class="score-ring-text">
+          <span class="big" id="ring-score">0</span>
+          <span class="small">/ 10</span>
+        </div>
+      </div>
+    </div>
+    <div class="breakdown" id="breakdown"></div>
+    <button class="btn btn-primary" id="btn-restart-top">Try Another Activity</button>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    icon: '🎯',
+    criterion: 'Criterion 1',
+    text: 'Does it involve a ball, puck, disc, or similar object central to play?',
+    detail: 'ball, puck, shuttlecock, disc, javelin, or other manipulated object'
+  },
+  {
+    icon: '🦘',
+    criterion: 'Criterion 2',
+    text: 'Does it require leaving the ground — jumping, leaping, or aerial phases?',
+    detail: 'any movement not fully supported by the ground'
+  },
+  {
+    icon: '⚠️',
+    criterion: 'Criterion 3',
+    text: 'Does it carry inherent danger beyond normal exertion?',
+    detail: 'real potential for injury from contact, falls, speed, or collisions'
+  },
+  {
+    icon: '💪',
+    criterion: 'Criterion 4',
+    text: 'Does it demand significant physical exertion or cardiovascular endurance?',
+    detail: 'sustained effort well beyond a short burst'
+  },
+  {
+    icon: '⚔️',
+    criterion: 'Criterion 5',
+    text: 'Does it involve direct competition against opponents?',
+    detail: 'head-to-head or team vs. team — not just racing a clock'
+  },
+  {
+    icon: '🏆',
+    criterion: 'Criterion 6',
+    text: 'Does it have standardized, objective scoring or win conditions?',
+    detail: 'measurable outcomes: goals, points, times, or distances'
+  },
+  {
+    icon: '🔔',
+    criterion: 'Criterion 7',
+    text: 'Does it always produce a definitive winner — no ties allowed?',
+    detail: 'overtime, sudden death, or tiebreakers prevent draws'
+  },
+  {
+    icon: '🧠',
+    criterion: 'Criterion 8',
+    text: 'Does it require strategic decision-making or tactics during play?',
+    detail: 'positioning, plays, defense/offense choices beyond pure reaction'
+  },
+  {
+    icon: '👟',
+    criterion: 'Criterion 9',
+    text: 'Does it require specialized footwear?',
+    detail: "cleats, skates, or anything your mom would yell at you for wearing inside"
+  },
+  {
+    icon: '🦺',
+    criterion: 'Criterion 10',
+    text: 'Does it have a referee or official who can ruin your day?',
+    detail: 'a human authority with real power to penalize or eject'
+  }
+];
+
+const TIERS = [
+  { min: 0,  max: 3,  label: 'Not a Sport',  icon: '🚫', ring: '#ff5c5c', tier: 0,
+    quip: (a) => `Sorry, "${a}" doesn't make the cut.` },
+  { min: 4,  max: 6,  label: 'Sport',         icon: '✅', ring: '#22d3a0', tier: 1,
+    quip: (a) => `Yep — "${a}" qualifies as a sport.` },
+  { min: 7,  max: 9,  label: 'Legit Sport',   icon: '🔥', ring: '#6c63ff', tier: 2,
+    quip: (a) => `"${a}" is a legit sport. Respect.` },
+  { min: 10, max: 10, label: 'Elite Sport',   icon: '👑', ring: '#ffd700', tier: 3,
+    quip: (a) => `"${a}" is an elite sport. Peak athleticism.` },
+];
+
+// ── State ──
+let activity = '';
+let current  = 0;
+let answers  = [];
+
+// ── Elements ──
+const screenIntro    = document.getElementById('screen-intro');
+const screenQuestion = document.getElementById('screen-question');
+const screenVerdict  = document.getElementById('screen-verdict');
+const activityInput  = document.getElementById('activity-input');
+const btnStart       = document.getElementById('btn-start');
+const btnYes         = document.getElementById('btn-yes');
+const btnNo          = document.getElementById('btn-no');
+const btnRestartTop  = document.getElementById('btn-restart-top');
+
+// ── Helpers ──
+function showScreen(el) {
+  [screenIntro, screenQuestion, screenVerdict].forEach(s => {
+    if (s === el) {
+      s.classList.remove('hidden');
+      s.classList.remove('fade-out');
+      s.classList.add('fade-in');
+    } else {
+      s.classList.add('hidden');
+      s.classList.remove('fade-in');
+    }
+  });
+}
+
+function transitionTo(fn) {
+  const active = [screenIntro, screenQuestion, screenVerdict].find(s => !s.classList.contains('hidden'));
+  if (!active) { fn(); return; }
+  active.classList.add('fade-out');
+  setTimeout(() => { fn(); }, 300);
+}
+
+// ── Dots ──
+function buildDots() {
+  const c = document.getElementById('dots-container');
+  c.innerHTML = '';
+  for (let i = 0; i < 10; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.id = `dot-${i}`;
+    c.appendChild(d);
+  }
+}
+
+function updateDots() {
+  for (let i = 0; i < 10; i++) {
+    const d = document.getElementById(`dot-${i}`);
+    d.className = 'dot';
+    if (i < current)       d.classList.add(answers[i] ? 'answered-yes' : 'answered-no');
+    else if (i === current) d.classList.add('active');
+  }
+}
+
+// ── Progress ──
+function updateProgress() {
+  const pct = (current / 10) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('q-progress-label').textContent = `Question ${current + 1} of 10`;
+  const yesCount = answers.filter(Boolean).length;
+  document.getElementById('q-yes-count').textContent = yesCount === 1 ? '1 yes' : `${yesCount} yes`;
+}
+
+// ── Question renderer ──
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  document.getElementById('q-icon').textContent     = q.icon;
+  document.getElementById('q-number').textContent   = q.criterion.toUpperCase();
+  document.getElementById('q-text').textContent     = q.text;
+  document.getElementById('q-activity-badge').textContent = activity;
+  updateProgress();
+  updateDots();
+}
+
+// ── Start ──
+function startQuiz() {
+  const val = activityInput.value.trim();
+  if (!val) {
+    activityInput.classList.add('shake');
+    activityInput.focus();
+    setTimeout(() => activityInput.classList.remove('shake'), 500);
+    return;
+  }
+  activity = val;
+  current  = 0;
+  answers  = [];
+
+  transitionTo(() => {
+    buildDots();
+    renderQuestion();
+    showScreen(screenQuestion);
+  });
+}
+
+// ── Answer ──
+function answer(yes) {
+  answers.push(yes);
+
+  // Briefly flash the chosen dot
+  const dot = document.getElementById(`dot-${current}`);
+  dot.classList.remove('active');
+  dot.classList.add(yes ? 'answered-yes' : 'answered-no');
+
+  current++;
+
+  if (current < 10) {
+    // Smooth swap: fade-out card content, update, fade-in
+    screenQuestion.classList.add('fade-out');
+    setTimeout(() => {
+      renderQuestion();
+      screenQuestion.classList.remove('fade-out');
+      screenQuestion.classList.add('fade-in');
+      setTimeout(() => screenQuestion.classList.remove('fade-in'), 350);
+    }, 280);
+  } else {
+    transitionTo(() => showVerdict());
+  }
+}
+
+// ── Verdict ──
+function getTier(score) {
+  return TIERS.find(t => score >= t.min && score <= t.max);
+}
+
+function showVerdict() {
+  const score = answers.filter(Boolean).length;
+  const tier  = getTier(score);
+
+  screenVerdict.className = 'card fade-in';
+  screenVerdict.classList.add(`tier-${tier.tier}`);
+
+  document.getElementById('verdict-icon').textContent  = tier.icon;
+  document.getElementById('verdict-title').textContent = tier.label;
+  document.getElementById('verdict-score').innerHTML   =
+    `<strong>${score}</strong> out of 10 — ${tier.quip(activity)}`;
+  document.getElementById('ring-score').textContent    = score;
+
+  showScreen(screenVerdict);
+
+  // Animate ring
+  const circumference = 314;
+  const offset = circumference - (score / 10) * circumference;
+  const ringEl = document.getElementById('ring-fill');
+  ringEl.style.stroke = tier.ring;
+  ringEl.style.strokeDashoffset = circumference; // reset
+  setTimeout(() => { ringEl.style.strokeDashoffset = offset; }, 50);
+
+  // Build breakdown
+  const breakdown = document.getElementById('breakdown');
+  breakdown.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const yes   = answers[i];
+    const item  = document.createElement('div');
+    item.className = 'breakdown-item';
+    item.style.animationDelay = `${i * 0.05}s`;
+    item.innerHTML = `
+      <span class="bi-num">${i+1}</span>
+      <span class="bi-dot" style="background:${yes ? 'var(--yes)' : 'var(--no)'}"></span>
+      <span class="bi-label">${q.text}</span>
+      <span class="bi-answer" style="color:${yes ? 'var(--yes)' : 'var(--no)'}">${yes ? 'YES' : 'NO'}</span>
+    `;
+    breakdown.appendChild(item);
+  });
+
+  // Confetti for high scores
+  if (score >= 7) launchConfetti(tier.ring);
+}
+
+// ── Restart ──
+function restart() {
+  transitionTo(() => {
+    activityInput.value = '';
+    showScreen(screenIntro);
+    activityInput.focus();
+  });
+}
+
+// ── Confetti ──
+function launchConfetti(color) {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx    = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = [color, '#fff', '#6c63ff', '#ffd700', '#22d3a0'];
+  const pieces = Array.from({length: 120}, () => ({
+    x: Math.random() * canvas.width,
+    y: -20 - Math.random() * 200,
+    r: 4 + Math.random() * 6,
+    d: 2 + Math.random() * 3,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    tilt: Math.random() * 360,
+    spin: (Math.random() - 0.5) * 6,
+    shape: Math.random() > 0.5 ? 'rect' : 'circle',
+    w: 6 + Math.random() * 10,
+    h: 4 + Math.random() * 8,
+  }));
+
+  let frame;
+  let ticks = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.tilt * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, 1 - ticks / 180);
+      if (p.shape === 'rect') {
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.r, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.restore();
+      p.y    += p.d;
+      p.tilt += p.spin;
+      p.x    += Math.sin(ticks * 0.02 + p.r) * 0.8;
+    });
+    ticks++;
+    if (ticks < 200) frame = requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  cancelAnimationFrame(frame);
+  draw();
+}
+
+// ── Event listeners ──
+btnStart.addEventListener('click', startQuiz);
+activityInput.addEventListener('keydown', e => { if (e.key === 'Enter') startQuiz(); });
+btnYes.addEventListener('click', () => answer(true));
+btnNo.addEventListener('click',  () => answer(false));
+btnRestartTop.addEventListener('click', restart);
+
+// Keyboard shortcuts during quiz
+document.addEventListener('keydown', e => {
+  if (screenQuestion.classList.contains('hidden')) return;
+  if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'y') answer(true);
+  if (e.key === 'ArrowLeft'  || e.key.toLowerCase() === 'n') answer(false);
+});
+</script>
+</body>
+</html>
