@@ -21,6 +21,8 @@
       --glow: rgba(108, 99, 255, 0.3);
     }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       background: var(--bg);
       color: var(--text);
@@ -140,6 +142,16 @@
       margin-bottom: 28px;
     }
 
+    /* ── Intro button grid ── */
+    .intro-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 420px) {
+      .intro-btns { grid-template-columns: 1fr; }
+    }
+
     /* ── Buttons ── */
     .btn {
       display: inline-flex;
@@ -152,7 +164,7 @@
       font-size: 1rem;
       font-weight: 700;
       letter-spacing: 0.01em;
-      padding: 16px 32px;
+      padding: 16px 24px;
       transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
       user-select: none;
     }
@@ -161,11 +173,22 @@
     .btn-primary {
       background: linear-gradient(135deg, var(--accent), #9b5de5);
       color: #fff;
-      width: 100%;
       font-size: 1.05rem;
       box-shadow: 0 4px 24px var(--glow);
     }
     .btn-primary:hover { filter: brightness(1.12); box-shadow: 0 6px 32px var(--glow); }
+
+    .btn-ai {
+      background: var(--surface2);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 1.05rem;
+    }
+    .btn-ai:hover {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 24px var(--glow);
+    }
 
     .answer-btns {
       display: grid;
@@ -197,6 +220,57 @@
       width: 100%;
     }
     .btn-restart:hover { background: var(--border); }
+
+    /* ── Loading screen ── */
+    #screen-loading {
+      text-align: center;
+      padding: 56px 36px;
+    }
+    .spinner {
+      width: 52px;
+      height: 52px;
+      border: 3px solid var(--surface2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      margin: 0 auto 28px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .loading-activity-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+    .loading-status {
+      color: var(--muted);
+      font-size: 0.9rem;
+      min-height: 1.4em;
+      transition: opacity 0.3s;
+    }
+    .loading-error-section {
+      margin-top: 28px;
+    }
+    .loading-error-section p {
+      color: var(--no);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .loading-error-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
 
     /* ── Progress bar ── */
     .progress-wrap {
@@ -281,6 +355,66 @@
       margin-bottom: 24px;
     }
 
+    /* ── AI Mode badge in question screen ── */
+    .ai-mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, rgba(108,99,255,0.18), rgba(108,99,255,0.08));
+      border: 1px solid rgba(108,99,255,0.45);
+      border-radius: 99px;
+      padding: 5px 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    /* ── AI Verdict reveal ── */
+    .ai-verdict-section {
+      margin-top: 28px;
+    }
+    .ai-verdict-banner {
+      padding: 18px 20px;
+      border-radius: 14px;
+      text-align: center;
+      font-size: 1.9rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      opacity: 0;
+      transform: scale(0.88);
+      transition: opacity 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                  transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .ai-verdict-banner.revealed {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .ai-verdict-banner.yes-verdict {
+      background: rgba(34, 211, 160, 0.1);
+      border: 2px solid var(--yes);
+      color: var(--yes);
+    }
+    .ai-verdict-banner.no-verdict {
+      background: rgba(255, 92, 92, 0.1);
+      border: 2px solid var(--no);
+      color: var(--no);
+    }
+    .ai-reasoning {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-style: italic;
+      line-height: 1.6;
+      text-align: center;
+      min-height: 2.8em;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .ai-reasoning.revealed { opacity: 1; }
+
     /* ── Verdict screen ── */
     .verdict-icon {
       font-size: 5rem;
@@ -305,9 +439,19 @@
       text-align: center;
       font-size: 1rem;
       color: var(--muted);
-      margin-bottom: 32px;
+      margin-bottom: 6px;
     }
     .verdict-score strong { color: var(--text); font-size: 1.3rem; }
+    .ai-credit {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 28px;
+      margin-top: 4px;
+    }
+    .ai-credit.hidden { display: none; }
 
     /* Score ring */
     .score-ring-wrap {
@@ -320,14 +464,8 @@
       width: 120px;
       height: 120px;
     }
-    .score-ring svg {
-      transform: rotate(-90deg);
-    }
-    .score-ring-bg {
-      fill: none;
-      stroke: var(--surface2);
-      stroke-width: 10;
-    }
+    .score-ring svg { transform: rotate(-90deg); }
+    .score-ring-bg { fill: none; stroke: var(--surface2); stroke-width: 10; }
     .score-ring-fill {
       fill: none;
       stroke-width: 10;
@@ -343,7 +481,7 @@
       justify-content: center;
       font-weight: 900;
     }
-    .score-ring-text .big { font-size: 2rem; line-height: 1; }
+    .score-ring-text .big  { font-size: 2rem; line-height: 1; }
     .score-ring-text .small { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
 
     /* Answer breakdown */
@@ -368,29 +506,17 @@
       from { opacity:0; transform: translateX(-10px); }
       to   { opacity:1; transform: translateX(0); }
     }
-    .breakdown-item .bi-num {
-      font-size: 0.7rem;
-      font-weight: 700;
+    .breakdown-item .bi-num  { font-size: 0.7rem; font-weight: 700; color: var(--muted); width: 16px; text-align: right; flex-shrink: 0; }
+    .breakdown-item .bi-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .breakdown-item .bi-label { flex: 1; color: var(--text); line-height: 1.4; }
+    .breakdown-item .bi-answer { font-weight: 700; font-size: 0.8rem; letter-spacing: 0.04em; flex-shrink: 0; }
+    .breakdown-item .bi-reasoning {
+      font-size: 0.78rem;
       color: var(--muted);
-      width: 16px;
-      text-align: right;
-      flex-shrink: 0;
+      font-style: italic;
+      margin-top: 3px;
     }
-    .breakdown-item .bi-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .breakdown-item .bi-label {
-      flex: 1;
-      color: var(--text);
-      line-height: 1.4;
-    }
-    .breakdown-item .bi-answer {
-      font-weight: 700;
-      font-size: 0.8rem;
-      letter-spacing: 0.04em;
-    }
+    .bi-label-wrap { flex: 1; }
 
     /* Verdict tiers */
     .tier-0 .verdict-title { color: var(--muted); }
@@ -405,12 +531,7 @@
     }
 
     /* Confetti canvas */
-    #confetti-canvas {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 999;
-    }
+    #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
 
     /* ── Utils ── */
     .hidden { display: none !important; }
@@ -418,6 +539,7 @@
     @media (max-width: 480px) {
       .card { padding: 28px 20px; }
       .answer-btns { gap: 10px; }
+      .loading-error-btns { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -432,20 +554,42 @@
   <!-- ── INTRO SCREEN ── -->
   <div class="card fade-in" id="screen-intro">
     <p class="intro-desc">
-      Enter any activity below and answer 10 yes/no questions. We'll tell you — definitively — whether it's a sport.
+      Enter any activity below. Answer the 10 questions yourself — or let Claude research it and decide.
     </p>
     <div class="activity-input-wrap">
       <label for="activity-input">What's the activity?</label>
       <input id="activity-input" type="text" placeholder="e.g. Golf, Pickleball, Chess…" autocomplete="off" spellcheck="false" />
     </div>
-    <button class="btn btn-primary" id="btn-start">
-      Start Quiz →
-    </button>
+    <div class="intro-btns">
+      <button class="btn btn-primary" id="btn-start">Answer Yourself →</button>
+      <button class="btn btn-ai"     id="btn-ai">🤖 Let Claude Decide</button>
+    </div>
+  </div>
+
+  <!-- ── LOADING SCREEN ── -->
+  <div class="card hidden" id="screen-loading">
+    <div class="spinner"></div>
+    <div class="loading-label">Analyzing</div>
+    <div class="loading-activity-name" id="loading-activity-name"></div>
+    <div class="loading-status" id="loading-status">Consulting the sports scholars…</div>
+    <div class="loading-error-section hidden" id="loading-error-section">
+      <p id="loading-error-msg">⚠️ Analysis failed.</p>
+      <div class="loading-error-btns">
+        <button class="btn btn-primary" id="btn-try-manual">Answer Manually →</button>
+        <button class="btn btn-ai"      id="btn-retry-ai">↺ Try Again</button>
+      </div>
+    </div>
   </div>
 
   <!-- ── QUESTION SCREEN ── -->
   <div class="card hidden" id="screen-question">
-    <div class="activity-badge" id="q-activity-badge"></div>
+
+    <!-- Manual mode: shows activity name badge -->
+    <div class="activity-badge hidden" id="q-activity-badge"></div>
+
+    <!-- AI mode: shows Claude badge -->
+    <div class="ai-mode-badge hidden" id="ai-mode-badge">🤖 Claude's Analysis</div>
+
     <div class="progress-wrap">
       <div class="progress-meta">
         <span id="q-progress-label">Question 1 of 10</span>
@@ -456,133 +600,148 @@
       </div>
       <div class="dots" id="dots-container"></div>
     </div>
+
     <span class="q-icon" id="q-icon"></span>
     <div class="q-number" id="q-number">CRITERION 1</div>
     <div class="q-text" id="q-text"></div>
-    <div class="answer-btns">
+
+    <!-- Manual answer buttons -->
+    <div class="answer-btns" id="answer-btns">
       <button class="btn btn-yes" id="btn-yes">👍 Yes</button>
       <button class="btn btn-no"  id="btn-no">👎 No</button>
     </div>
+
+    <!-- AI reveal section (hidden during manual mode) -->
+    <div class="ai-verdict-section hidden" id="ai-verdict-section">
+      <div class="ai-verdict-banner" id="ai-verdict-banner"></div>
+      <div class="ai-reasoning"      id="ai-reasoning"></div>
+    </div>
+
   </div>
 
   <!-- ── VERDICT SCREEN ── -->
   <div class="card hidden" id="screen-verdict">
     <span class="verdict-icon" id="verdict-icon"></span>
     <div class="verdict-title" id="verdict-title"></div>
-    <div class="verdict-score" id="verdict-score"></div>
+    <div class="verdict-score"  id="verdict-score"></div>
+    <div class="ai-credit hidden" id="ai-credit">Determined by Claude 🤖</div>
     <div class="score-ring-wrap">
       <div class="score-ring">
         <svg viewBox="0 0 120 120" width="120" height="120">
-          <circle class="score-ring-bg" cx="60" cy="60" r="50"/>
+          <circle class="score-ring-bg"   cx="60" cy="60" r="50"/>
           <circle class="score-ring-fill" id="ring-fill" cx="60" cy="60" r="50"
-            stroke-dasharray="314"
-            stroke-dashoffset="314"
-          />
+            stroke-dasharray="314" stroke-dashoffset="314"/>
         </svg>
         <div class="score-ring-text">
-          <span class="big" id="ring-score">0</span>
+          <span class="big"   id="ring-score">0</span>
           <span class="small">/ 10</span>
         </div>
       </div>
     </div>
-    <div class="breakdown" id="breakdown"></div>
+    <div class="breakdown"  id="breakdown"></div>
     <button class="btn btn-primary" id="btn-restart-top">Try Another Activity</button>
   </div>
 </div>
 
 <script>
+/* ─────────────────────────────────────────────
+   Data
+───────────────────────────────────────────── */
 const QUESTIONS = [
-  {
-    icon: '🎯',
-    criterion: 'Criterion 1',
-    text: 'Does it involve a ball, puck, disc, or similar object central to play?',
-    detail: 'ball, puck, shuttlecock, disc, javelin, or other manipulated object'
-  },
-  {
-    icon: '🦘',
-    criterion: 'Criterion 2',
-    text: 'Does it require leaving the ground — jumping, leaping, or aerial phases?',
-    detail: 'any movement not fully supported by the ground'
-  },
-  {
-    icon: '⚠️',
-    criterion: 'Criterion 3',
-    text: 'Does it carry inherent danger beyond normal exertion?',
-    detail: 'real potential for injury from contact, falls, speed, or collisions'
-  },
-  {
-    icon: '💪',
-    criterion: 'Criterion 4',
-    text: 'Does it demand significant physical exertion or cardiovascular endurance?',
-    detail: 'sustained effort well beyond a short burst'
-  },
-  {
-    icon: '⚔️',
-    criterion: 'Criterion 5',
-    text: 'Does it involve direct competition against opponents?',
-    detail: 'head-to-head or team vs. team — not just racing a clock'
-  },
-  {
-    icon: '🏆',
-    criterion: 'Criterion 6',
-    text: 'Does it have standardized, objective scoring or win conditions?',
-    detail: 'measurable outcomes: goals, points, times, or distances'
-  },
-  {
-    icon: '🔔',
-    criterion: 'Criterion 7',
-    text: 'Does it always produce a definitive winner — no ties allowed?',
-    detail: 'overtime, sudden death, or tiebreakers prevent draws'
-  },
-  {
-    icon: '🧠',
-    criterion: 'Criterion 8',
-    text: 'Does it require strategic decision-making or tactics during play?',
-    detail: 'positioning, plays, defense/offense choices beyond pure reaction'
-  },
-  {
-    icon: '👟',
-    criterion: 'Criterion 9',
-    text: 'Does it require specialized footwear?',
-    detail: "cleats, skates, or anything your mom would yell at you for wearing inside"
-  },
-  {
-    icon: '🦺',
-    criterion: 'Criterion 10',
-    text: 'Does it have a referee or official who can ruin your day?',
-    detail: 'a human authority with real power to penalize or eject'
-  }
+  { icon: '🎯', criterion: 'Criterion 1',  text: 'Does it involve a ball, puck, disc, or similar object central to play?' },
+  { icon: '🦘', criterion: 'Criterion 2',  text: 'Does it require leaving the ground — jumping, leaping, or aerial phases?' },
+  { icon: '⚠️', criterion: 'Criterion 3',  text: 'Does it carry inherent danger or risk of harm beyond normal exertion?' },
+  { icon: '💪', criterion: 'Criterion 4',  text: 'Does it demand significant physical exertion or cardiovascular endurance?' },
+  { icon: '⚔️', criterion: 'Criterion 5',  text: 'Does it involve direct competition against opponents?' },
+  { icon: '🏆', criterion: 'Criterion 6',  text: 'Does it have standardized, objective scoring or win conditions?' },
+  { icon: '🔔', criterion: 'Criterion 7',  text: 'Does it always produce a definitive winner — no ties allowed?' },
+  { icon: '🧠', criterion: 'Criterion 8',  text: 'Does it require strategic decision-making or tactics during play?' },
+  { icon: '👟', criterion: 'Criterion 9',  text: 'Does it require specialized footwear?' },
+  { icon: '🦺', criterion: 'Criterion 10', text: 'Does it have a referee or official who can ruin your day?' },
 ];
 
 const TIERS = [
-  { min: 0,  max: 3,  label: 'Not a Sport',  icon: '🚫', ring: '#ff5c5c', tier: 0,
-    quip: (a) => `Sorry, "${a}" doesn't make the cut.` },
-  { min: 4,  max: 6,  label: 'Sport',         icon: '✅', ring: '#22d3a0', tier: 1,
-    quip: (a) => `Yep — "${a}" qualifies as a sport.` },
-  { min: 7,  max: 9,  label: 'Legit Sport',   icon: '🔥', ring: '#6c63ff', tier: 2,
-    quip: (a) => `"${a}" is a legit sport. Respect.` },
-  { min: 10, max: 10, label: 'Elite Sport',   icon: '👑', ring: '#ffd700', tier: 3,
-    quip: (a) => `"${a}" is an elite sport. Peak athleticism.` },
+  { min: 0,  max: 3,  label: 'Not a Sport', icon: '🚫', ring: '#ff5c5c', tier: 0,
+    quip: a => `Sorry — "${a}" doesn't make the cut.` },
+  { min: 4,  max: 6,  label: 'Sport',        icon: '✅', ring: '#22d3a0', tier: 1,
+    quip: a => `Yep — "${a}" qualifies as a sport.` },
+  { min: 7,  max: 9,  label: 'Legit Sport',  icon: '🔥', ring: '#6c63ff', tier: 2,
+    quip: a => `"${a}" is a legit sport. Respect.` },
+  { min: 10, max: 10, label: 'Elite Sport',  icon: '👑', ring: '#ffd700', tier: 3,
+    quip: a => `"${a}" is an elite sport. Peak athleticism.` },
 ];
 
-// ── State ──
-let activity = '';
-let current  = 0;
-let answers  = [];
+const LOADING_MSGS = [
+  'Consulting the sports scholars…',
+  'Checking rulebooks worldwide…',
+  'Analyzing athleticism requirements…',
+  'Cross-referencing Olympic criteria…',
+  'Running the classification algorithm…',
+  'Reviewing historical precedent…',
+];
 
-// ── Elements ──
+/* ─────────────────────────────────────────────
+   State
+───────────────────────────────────────────── */
+let activity   = '';
+let current    = 0;
+let answers    = [];
+let isAIMode   = false;
+let aiAnswers  = [];
+let aiReasoning = [];
+
+/* ─────────────────────────────────────────────
+   Elements
+───────────────────────────────────────────── */
 const screenIntro    = document.getElementById('screen-intro');
+const screenLoading  = document.getElementById('screen-loading');
 const screenQuestion = document.getElementById('screen-question');
 const screenVerdict  = document.getElementById('screen-verdict');
+
 const activityInput  = document.getElementById('activity-input');
 const btnStart       = document.getElementById('btn-start');
+const btnAI          = document.getElementById('btn-ai');
 const btnYes         = document.getElementById('btn-yes');
 const btnNo          = document.getElementById('btn-no');
 const btnRestartTop  = document.getElementById('btn-restart-top');
 
-// ── Helpers ──
+const answerBtns     = document.getElementById('answer-btns');
+const qActivityBadge = document.getElementById('q-activity-badge');
+const aiModeBadge    = document.getElementById('ai-mode-badge');
+const aiVerdictSection = document.getElementById('ai-verdict-section');
+const aiVerdictBanner  = document.getElementById('ai-verdict-banner');
+const aiReasoningEl    = document.getElementById('ai-reasoning');
+
+const loadingActivityName = document.getElementById('loading-activity-name');
+const loadingStatus       = document.getElementById('loading-status');
+const loadingErrorSection = document.getElementById('loading-error-section');
+const loadingErrorMsg     = document.getElementById('loading-error-msg');
+const btnTryManual        = document.getElementById('btn-try-manual');
+const btnRetryAI          = document.getElementById('btn-retry-ai');
+
+const aiCreditEl  = document.getElementById('ai-credit');
+
+/* ─────────────────────────────────────────────
+   Utility
+───────────────────────────────────────────── */
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function getActivityValue() {
+  const val = activityInput.value.trim();
+  if (!val) {
+    activityInput.classList.add('shake');
+    activityInput.focus();
+    setTimeout(() => activityInput.classList.remove('shake'), 500);
+    return null;
+  }
+  return val;
+}
+
+/* ─────────────────────────────────────────────
+   Screen management
+───────────────────────────────────────────── */
 function showScreen(el) {
-  [screenIntro, screenQuestion, screenVerdict].forEach(s => {
+  [screenIntro, screenLoading, screenQuestion, screenVerdict].forEach(s => {
     if (s === el) {
       s.classList.remove('hidden');
       s.classList.remove('fade-out');
@@ -595,13 +754,16 @@ function showScreen(el) {
 }
 
 function transitionTo(fn) {
-  const active = [screenIntro, screenQuestion, screenVerdict].find(s => !s.classList.contains('hidden'));
+  const active = [screenIntro, screenLoading, screenQuestion, screenVerdict]
+    .find(s => !s.classList.contains('hidden'));
   if (!active) { fn(); return; }
   active.classList.add('fade-out');
   setTimeout(() => { fn(); }, 300);
 }
 
-// ── Dots ──
+/* ─────────────────────────────────────────────
+   Dots & Progress
+───────────────────────────────────────────── */
 function buildDots() {
   const c = document.getElementById('dots-container');
   c.innerHTML = '';
@@ -617,12 +779,11 @@ function updateDots() {
   for (let i = 0; i < 10; i++) {
     const d = document.getElementById(`dot-${i}`);
     d.className = 'dot';
-    if (i < current)       d.classList.add(answers[i] ? 'answered-yes' : 'answered-no');
+    if (i < current)        d.classList.add(answers[i] ? 'answered-yes' : 'answered-no');
     else if (i === current) d.classList.add('active');
   }
 }
 
-// ── Progress ──
 function updateProgress() {
   const pct = (current / 10) * 100;
   document.getElementById('progress-fill').style.width = pct + '%';
@@ -631,42 +792,45 @@ function updateProgress() {
   document.getElementById('q-yes-count').textContent = yesCount === 1 ? '1 yes' : `${yesCount} yes`;
 }
 
-// ── Question renderer ──
+/* ─────────────────────────────────────────────
+   Question renderer
+───────────────────────────────────────────── */
 function renderQuestion() {
   const q = QUESTIONS[current];
-  document.getElementById('q-icon').textContent     = q.icon;
-  document.getElementById('q-number').textContent   = q.criterion.toUpperCase();
-  document.getElementById('q-text').textContent     = q.text;
-  document.getElementById('q-activity-badge').textContent = activity;
+  document.getElementById('q-icon').textContent   = q.icon;
+  document.getElementById('q-number').textContent = q.criterion.toUpperCase();
+  document.getElementById('q-text').textContent   = q.text;
   updateProgress();
   updateDots();
 }
 
-// ── Start ──
-function startQuiz() {
-  const val = activityInput.value.trim();
-  if (!val) {
-    activityInput.classList.add('shake');
-    activityInput.focus();
-    setTimeout(() => activityInput.classList.remove('shake'), 500);
-    return;
-  }
-  activity = val;
-  current  = 0;
-  answers  = [];
+/* ─────────────────────────────────────────────
+   Manual Quiz
+───────────────────────────────────────────── */
+function startManualQuiz() {
+  const val = getActivityValue();
+  if (!val) return;
+  activity   = val;
+  current    = 0;
+  answers    = [];
+  isAIMode   = false;
 
   transitionTo(() => {
     buildDots();
+    // Restore manual UI
+    qActivityBadge.textContent = activity;
+    qActivityBadge.classList.remove('hidden');
+    aiModeBadge.classList.add('hidden');
+    answerBtns.classList.remove('hidden');
+    aiVerdictSection.classList.add('hidden');
     renderQuestion();
     showScreen(screenQuestion);
   });
 }
 
-// ── Answer ──
 function answer(yes) {
   answers.push(yes);
 
-  // Briefly flash the chosen dot
   const dot = document.getElementById(`dot-${current}`);
   dot.classList.remove('active');
   dot.classList.add(yes ? 'answered-yes' : 'answered-no');
@@ -674,7 +838,6 @@ function answer(yes) {
   current++;
 
   if (current < 10) {
-    // Smooth swap: fade-out card content, update, fade-in
     screenQuestion.classList.add('fade-out');
     setTimeout(() => {
       renderQuestion();
@@ -687,7 +850,139 @@ function answer(yes) {
   }
 }
 
-// ── Verdict ──
+/* ─────────────────────────────────────────────
+   AI Quiz
+───────────────────────────────────────────── */
+async function startAIQuiz() {
+  const val = getActivityValue();
+  if (!val) return;
+  activity  = val;
+  current   = 0;
+  answers   = [];
+  isAIMode  = true;
+
+  // Show loading screen
+  loadingActivityName.textContent = `"${activity}"`;
+  loadingStatus.textContent = LOADING_MSGS[0];
+  loadingErrorSection.classList.add('hidden');
+  transitionTo(() => showScreen(screenLoading));
+
+  // Cycle loading messages
+  let msgIdx = 0;
+  const msgInterval = setInterval(() => {
+    msgIdx = (msgIdx + 1) % LOADING_MSGS.length;
+    loadingStatus.style.opacity = '0';
+    setTimeout(() => {
+      loadingStatus.textContent = LOADING_MSGS[msgIdx];
+      loadingStatus.style.opacity = '1';
+    }, 200);
+  }, 2200);
+
+  try {
+    const resp = await fetch('/api/analyze', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ activity }),
+    });
+
+    clearInterval(msgInterval);
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${resp.status}`);
+    }
+
+    const data = await resp.json();
+
+    if (!Array.isArray(data.answers) || data.answers.length !== 10) {
+      throw new Error('Unexpected response from server.');
+    }
+
+    aiAnswers   = data.answers;
+    aiReasoning = data.reasoning || Array(10).fill('');
+
+    await sleep(400); // brief pause so loading screen doesn't flash
+    buildDots();
+    transitionTo(() => runAIReveal());
+
+  } catch (err) {
+    clearInterval(msgInterval);
+    loadingErrorMsg.textContent = `⚠️ ${err.message || 'Analysis failed. Check your API key and server.'}`;
+    loadingErrorSection.classList.remove('hidden');
+    loadingStatus.textContent = '';
+  }
+}
+
+async function runAIReveal() {
+  // Set up AI mode UI
+  qActivityBadge.classList.add('hidden');
+  aiModeBadge.classList.remove('hidden');
+  answerBtns.classList.add('hidden');
+  aiVerdictSection.classList.remove('hidden');
+
+  showScreen(screenQuestion);
+
+  for (let i = 0; i < 10; i++) {
+    current = i;
+
+    // Reset reveal elements
+    aiVerdictBanner.className = 'ai-verdict-banner';
+    aiVerdictBanner.textContent = '';
+    aiReasoningEl.className = 'ai-reasoning';
+    aiReasoningEl.textContent = '';
+
+    // Transition between questions
+    if (i > 0) {
+      screenQuestion.classList.add('fade-out');
+      await sleep(280);
+      screenQuestion.classList.remove('fade-out');
+      screenQuestion.classList.add('fade-in');
+      await sleep(50);
+      screenQuestion.classList.remove('fade-in');
+    }
+
+    renderQuestion();
+
+    // Let the question be read
+    await sleep(750);
+
+    // Reveal YES / NO with a pop
+    const yes = aiAnswers[i];
+    aiVerdictBanner.textContent = yes ? '✓  YES' : '✗  NO';
+    aiVerdictBanner.classList.add('revealed', yes ? 'yes-verdict' : 'no-verdict');
+
+    // Update tracking state
+    answers.push(yes);
+    const dot = document.getElementById(`dot-${i}`);
+    dot.className = 'dot ' + (yes ? 'answered-yes' : 'answered-no');
+    const yesCount = answers.filter(Boolean).length;
+    document.getElementById('q-yes-count').textContent =
+      yesCount === 1 ? '1 yes' : `${yesCount} yes`;
+    document.getElementById('progress-fill').style.width = ((i + 1) / 10) * 100 + '%';
+
+    await sleep(380);
+
+    // Reveal reasoning
+    if (aiReasoning[i]) {
+      aiReasoningEl.textContent = aiReasoning[i];
+      aiReasoningEl.classList.add('revealed');
+    }
+
+    await sleep(1700);
+  }
+
+  // Restore UI before verdict
+  aiModeBadge.classList.add('hidden');
+  aiVerdictSection.classList.add('hidden');
+  answerBtns.classList.remove('hidden');
+  qActivityBadge.classList.remove('hidden');
+
+  transitionTo(() => showVerdict());
+}
+
+/* ─────────────────────────────────────────────
+   Verdict
+───────────────────────────────────────────── */
 function getTier(score) {
   return TIERS.find(t => score >= t.min && score <= t.max);
 }
@@ -696,14 +991,20 @@ function showVerdict() {
   const score = answers.filter(Boolean).length;
   const tier  = getTier(score);
 
-  screenVerdict.className = 'card fade-in';
-  screenVerdict.classList.add(`tier-${tier.tier}`);
+  screenVerdict.className = `card fade-in tier-${tier.tier}`;
 
   document.getElementById('verdict-icon').textContent  = tier.icon;
   document.getElementById('verdict-title').textContent = tier.label;
   document.getElementById('verdict-score').innerHTML   =
     `<strong>${score}</strong> out of 10 — ${tier.quip(activity)}`;
   document.getElementById('ring-score').textContent    = score;
+
+  // Show/hide AI credit line
+  if (isAIMode) {
+    aiCreditEl.classList.remove('hidden');
+  } else {
+    aiCreditEl.classList.add('hidden');
+  }
 
   showScreen(screenVerdict);
 
@@ -712,7 +1013,7 @@ function showVerdict() {
   const offset = circumference - (score / 10) * circumference;
   const ringEl = document.getElementById('ring-fill');
   ringEl.style.stroke = tier.ring;
-  ringEl.style.strokeDashoffset = circumference; // reset
+  ringEl.style.strokeDashoffset = circumference;
   setTimeout(() => { ringEl.style.strokeDashoffset = offset; }, 50);
 
   // Build breakdown
@@ -723,21 +1024,32 @@ function showVerdict() {
     const item  = document.createElement('div');
     item.className = 'breakdown-item';
     item.style.animationDelay = `${i * 0.05}s`;
+
+    const reasoning = (isAIMode && aiReasoning[i])
+      ? `<div class="bi-reasoning">${aiReasoning[i]}</div>` : '';
+
     item.innerHTML = `
       <span class="bi-num">${i+1}</span>
       <span class="bi-dot" style="background:${yes ? 'var(--yes)' : 'var(--no)'}"></span>
-      <span class="bi-label">${q.text}</span>
+      <span class="bi-label-wrap">
+        <span class="bi-label">${q.text}</span>
+        ${reasoning}
+      </span>
       <span class="bi-answer" style="color:${yes ? 'var(--yes)' : 'var(--no)'}">${yes ? 'YES' : 'NO'}</span>
     `;
     breakdown.appendChild(item);
   });
 
-  // Confetti for high scores
   if (score >= 7) launchConfetti(tier.ring);
 }
 
-// ── Restart ──
+/* ─────────────────────────────────────────────
+   Restart
+───────────────────────────────────────────── */
 function restart() {
+  isAIMode    = false;
+  aiAnswers   = [];
+  aiReasoning = [];
   transitionTo(() => {
     activityInput.value = '';
     showScreen(screenIntro);
@@ -745,7 +1057,9 @@ function restart() {
   });
 }
 
-// ── Confetti ──
+/* ─────────────────────────────────────────────
+   Confetti
+───────────────────────────────────────────── */
 function launchConfetti(color) {
   const canvas = document.getElementById('confetti-canvas');
   const ctx    = canvas.getContext('2d');
@@ -753,7 +1067,7 @@ function launchConfetti(color) {
   canvas.height = window.innerHeight;
 
   const colors = [color, '#fff', '#6c63ff', '#ffd700', '#22d3a0'];
-  const pieces = Array.from({length: 120}, () => ({
+  const pieces = Array.from({ length: 120 }, () => ({
     x: Math.random() * canvas.width,
     y: -20 - Math.random() * 200,
     r: 4 + Math.random() * 6,
@@ -777,10 +1091,10 @@ function launchConfetti(color) {
       ctx.fillStyle = p.color;
       ctx.globalAlpha = Math.max(0, 1 - ticks / 180);
       if (p.shape === 'rect') {
-        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
       } else {
         ctx.beginPath();
-        ctx.arc(0, 0, p.r, 0, Math.PI*2);
+        ctx.arc(0, 0, p.r, 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.restore();
@@ -796,15 +1110,41 @@ function launchConfetti(color) {
   draw();
 }
 
-// ── Event listeners ──
-btnStart.addEventListener('click', startQuiz);
-activityInput.addEventListener('keydown', e => { if (e.key === 'Enter') startQuiz(); });
+/* ─────────────────────────────────────────────
+   Event Listeners
+───────────────────────────────────────────── */
+btnStart.addEventListener('click', startManualQuiz);
+btnAI.addEventListener('click', startAIQuiz);
+
+activityInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') startManualQuiz();
+});
+
 btnYes.addEventListener('click', () => answer(true));
 btnNo.addEventListener('click',  () => answer(false));
 btnRestartTop.addEventListener('click', restart);
 
-// Keyboard shortcuts during quiz
+// Error screen actions
+btnTryManual.addEventListener('click', () => {
+  isAIMode = false;
+  transitionTo(() => {
+    buildDots();
+    qActivityBadge.textContent = activity;
+    qActivityBadge.classList.remove('hidden');
+    aiModeBadge.classList.add('hidden');
+    answerBtns.classList.remove('hidden');
+    aiVerdictSection.classList.add('hidden');
+    answers  = [];
+    current  = 0;
+    renderQuestion();
+    showScreen(screenQuestion);
+  });
+});
+btnRetryAI.addEventListener('click', startAIQuiz);
+
+// Keyboard shortcuts (manual mode only)
 document.addEventListener('keydown', e => {
+  if (isAIMode) return;
   if (screenQuestion.classList.contains('hidden')) return;
   if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'y') answer(true);
   if (e.key === 'ArrowLeft'  || e.key.toLowerCase() === 'n') answer(false);
