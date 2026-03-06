@@ -434,7 +434,55 @@
     #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
     .hidden { display: none !important; }
 
-    @media (max-width: 480px) { .card { padding: 28px 20px; } .answer-btns { gap: 10px; } }
+    /* ── Calibration Lab ── */
+    #screen-calibrate { overflow-y: auto; }
+    .calib-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, rgba(108,99,255,0.2), rgba(108,99,255,0.1));
+      border: 1px solid rgba(108,99,255,0.4); border-radius: 99px;
+      padding: 5px 14px; font-size: 0.75rem; font-weight: 700;
+      color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .calib-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 24px; }
+    .calib-controls { display: flex; gap: 12px; margin-bottom: 4px; }
+    .calib-controls .btn-primary { flex: 1; }
+    .calib-prog-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); font-weight: 600; margin: 16px 0 8px; }
+    .calib-done-num { color: var(--accent); font-size: 1rem; font-weight: 800; }
+    .calib-failed-label { color: var(--no); }
+    .calib-chips { display: flex; flex-wrap: wrap; gap: 5px; margin: 14px 0 0; }
+    .calib-chip {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+      padding: 3px 7px; font-size: 0.7rem; font-weight: 600; color: var(--muted);
+      transition: background 0.3s, color 0.3s, border-color 0.3s; cursor: default;
+    }
+    .calib-chip.running { border-color: var(--accent); color: var(--accent); animation: chipPulse 0.9s ease infinite; }
+    .calib-chip.done-high { background: rgba(34,211,160,0.12); border-color: var(--yes); color: var(--yes); }
+    .calib-chip.done-mid  { background: rgba(108,99,255,0.12); border-color: var(--accent); color: var(--accent); }
+    .calib-chip.done-low  { background: rgba(255,92,92,0.12);  border-color: var(--no);  color: var(--no); }
+    .calib-chip.failed    { opacity: 0.35; text-decoration: line-through; }
+    @keyframes chipPulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+    .calib-section-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 22px 0 10px; }
+    .calib-summary { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 4px; }
+    .csb { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 6px; text-align: center; }
+    .csb-count { font-size: 1.4rem; font-weight: 900; line-height: 1; }
+    .csb-label { font-size: 0.62rem; color: var(--muted); font-weight: 600; letter-spacing: 0.03em; margin-top: 3px; }
+    .histo-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .histo-label { width: 18px; text-align: right; font-size: 0.78rem; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+    .histo-track { flex: 1; background: var(--surface2); border-radius: 4px; height: 17px; overflow: hidden; }
+    .histo-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 6px; font-size: 0.68rem; font-weight: 700; color: rgba(255,255,255,0.85); transition: width 0.6s cubic-bezier(0.4,0,0.2,1); min-width: 2px; }
+    .histo-n { width: 22px; font-size: 0.75rem; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+    .calib-divider { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--border); text-align: center; padding: 10px 0 4px; border-top: 1px solid var(--border); margin-top: 6px; }
+    .calib-divider:first-child { border-top: none; margin-top: 0; }
+    .calib-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); margin-bottom: 4px; animation: slideIn 0.25s ease both; }
+    .calib-row-name { flex: 1; font-size: 0.88rem; font-weight: 600; color: var(--text); }
+    .calib-row-score { font-size: 1.05rem; font-weight: 900; width: 26px; text-align: center; flex-shrink: 0; }
+    .calib-row-tier { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; padding: 3px 8px; border-radius: 99px; flex-shrink: 0; white-space: nowrap; }
+    .tb-0 { background: rgba(112,112,160,0.15); color: var(--muted); }
+    .tb-1 { background: rgba(34,211,160,0.12);  color: var(--yes); }
+    .tb-2 { background: rgba(108,99,255,0.15);  color: var(--accent); }
+    .tb-3 { background: rgba(255,215,0,0.12);   color: #ffd700; }
+
+    @media (max-width: 480px) { .card { padding: 28px 20px; } .answer-btns { gap: 10px; } .calib-summary { grid-template-columns: repeat(2,1fr); } }
   </style>
 </head>
 <body>
@@ -545,6 +593,32 @@
     </div>
     <div class="breakdown" id="breakdown"></div>
     <button class="btn btn-primary" id="btn-restart-top">Try Another Activity</button>
+  </div>
+
+  <!-- ── CALIBRATION LAB ── -->
+  <div class="card hidden" id="screen-calibrate">
+    <span class="calib-badge">⚗️ Calibration Lab</span>
+    <p class="calib-desc">Fires 50 activities in parallel through Claude to show how scores distribute across the current thresholds. Use the results to decide if 4 / 7 / 10 are the right breakpoints.</p>
+    <div class="calib-controls">
+      <button class="btn btn-primary" id="btn-run-calib">▶ Run 50 Activities</button>
+      <button class="btn btn-restart" id="btn-calib-back">← Back</button>
+    </div>
+    <div class="hidden" id="calib-running">
+      <div class="calib-prog-meta">
+        <span><span class="calib-done-num" id="calib-done">0</span> / 50 complete</span>
+        <span class="calib-failed-label" id="calib-failed-label"></span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="calib-fill" style="width:0%"></div></div>
+      <div class="calib-chips" id="calib-chips"></div>
+    </div>
+    <div class="hidden" id="calib-results-section">
+      <div class="calib-section-title">Tier Distribution</div>
+      <div class="calib-summary" id="calib-summary"></div>
+      <div class="calib-section-title">Score Histogram</div>
+      <div id="calib-histogram"></div>
+      <div class="calib-section-title">All Results — sorted by score</div>
+      <div id="calib-rows"></div>
+    </div>
   </div>
 </div>
 
@@ -707,7 +781,7 @@ function getActivityValue() {
 }
 
 /* ─── Screen management ─────────────────────── */
-const SCREENS = () => [screenIntro, screenLoading, screenQuestion, screenVerdict];
+const SCREENS = () => [screenIntro, screenLoading, screenQuestion, screenVerdict, screenCalibrate];
 
 function showScreen(el) {
   SCREENS().forEach(s => {
@@ -951,11 +1025,139 @@ function launchConfetti(color) {
   cancelAnimationFrame(frame); draw();
 }
 
+/* ─── Calibration Lab ───────────────────────── */
+const CALIB_ACTIVITIES = [
+  // Unambiguous sports
+  'Soccer','Basketball','American Football','Ice Hockey','Tennis',
+  'Baseball','Rugby','Boxing','Volleyball','Cricket',
+  'Competitive Swimming','Track and Field','Road Cycling','Rowing','Triathlon',
+  'Wrestling','Judo','Fencing','Archery','Weightlifting',
+  // Probably sports
+  'Golf','Table Tennis','Badminton','Lacrosse','Water Polo',
+  'Curling','Alpine Skiing','Snowboarding','Skateboarding','Competitive Surfing',
+  'Sport Climbing','Gymnastics','Competitive Cheerleading','Bowling','Darts',
+  // Borderline / debatable
+  'Chess','Esports','Poker','Billiards','NASCAR Racing',
+  'Equestrian Show Jumping','Competitive Fishing','Competitive Eating','CrossFit','Competitive Dance',
+  // Clearly not sports
+  'Hiking','Yoga','Knitting','Cooking','Gardening',
+];
+
+let calibResults = {};
+let calibDone    = 0;
+
+function chipId(name) { return 'chip-' + name.replace(/\W+/g,'_'); }
+function chipClass(score) { return score >= 7 ? 'done-high' : score >= 4 ? 'done-mid' : 'done-low'; }
+
+async function runCalibration() {
+  if (!getSavedKey()) {
+    transitionTo(() => { showScreen(screenIntro); setTimeout(() => document.getElementById('api-key-toggle').click(), 350); });
+    return;
+  }
+  calibResults = {}; calibDone = 0;
+  const runBtn     = document.getElementById('btn-run-calib');
+  const runSection = document.getElementById('calib-running');
+  const resSection = document.getElementById('calib-results-section');
+  const chips      = document.getElementById('calib-chips');
+  const fill       = document.getElementById('calib-fill');
+  const doneEl     = document.getElementById('calib-done');
+  const failedEl   = document.getElementById('calib-failed-label');
+
+  runBtn.disabled = true; runBtn.textContent = 'Running…';
+  runSection.classList.remove('hidden');
+  resSection.classList.add('hidden');
+  fill.style.width = '0%'; doneEl.textContent = '0'; failedEl.textContent = '';
+
+  chips.innerHTML = '';
+  CALIB_ACTIVITIES.forEach(name => {
+    const c = document.createElement('span');
+    c.className = 'calib-chip'; c.id = chipId(name); c.textContent = name;
+    chips.appendChild(c);
+  });
+
+  await Promise.all(CALIB_ACTIVITIES.map((name, i) =>
+    new Promise(resolve => setTimeout(async () => {
+      const chip = document.getElementById(chipId(name));
+      if (chip) chip.classList.add('running');
+      try {
+        const data  = await analyzeWithClaude(name);
+        const score = data.answers.filter(Boolean).length;
+        calibResults[name] = { score, answers: data.answers };
+        if (chip) { chip.classList.remove('running'); chip.classList.add(chipClass(score)); chip.title = `${score}/10`; }
+      } catch {
+        calibResults[name] = null;
+        if (chip) { chip.classList.remove('running'); chip.classList.add('failed'); }
+      }
+      calibDone++;
+      doneEl.textContent = calibDone;
+      fill.style.width = (calibDone / 50 * 100) + '%';
+      const nFailed = Object.values(calibResults).filter(v => v === null).length;
+      failedEl.textContent = nFailed ? `${nFailed} failed` : '';
+      resolve();
+    }, i * 150))  // 150 ms stagger → all launched in ~7.5 s
+  ));
+
+  runBtn.disabled = false; runBtn.textContent = '↺ Run Again';
+  renderCalibResults();
+}
+
+function renderCalibResults() {
+  const HISTO_COLORS = [
+    '#4a4a70','#4a4a70','#4a4a70','#4a4a70',  // 0-3
+    '#22d3a0','#22d3a0','#22d3a0',             // 4-6
+    '#6c63ff','#6c63ff','#6c63ff',             // 7-9
+    '#ffd700',                                  // 10
+  ];
+  const TIER_LABELS = ['Not a Sport  (0–3)','Sport  (4–6)','Legit Sport  (7–9)','Elite Sport  (10)'];
+  const TIER_COLORS = ['var(--muted)','var(--yes)','var(--accent)','#ffd700'];
+
+  const valid  = CALIB_ACTIVITIES.map(n => calibResults[n] && { name:n, ...calibResults[n] }).filter(Boolean);
+  const sorted = [...valid].sort((a,b) => b.score - a.score);
+  const dist   = Array(11).fill(0); valid.forEach(x => dist[x.score]++);
+  const maxD   = Math.max(...dist, 1);
+  const tierCounts = [0,0,0,0]; valid.forEach(x => tierCounts[getTier(x.score).tier]++);
+
+  // Summary
+  document.getElementById('calib-summary').innerHTML = TIER_LABELS.map((l,i) => `
+    <div class="csb">
+      <div class="csb-count" style="color:${TIER_COLORS[i]}">${tierCounts[i]}</div>
+      <div class="csb-label">${l}</div>
+    </div>`).join('');
+
+  // Histogram
+  document.getElementById('calib-histogram').innerHTML = Array.from({length:11},(_,s) => `
+    <div class="histo-row">
+      <span class="histo-label">${s}</span>
+      <div class="histo-track">
+        <div class="histo-bar" style="width:${dist[s]/maxD*100}%;background:${HISTO_COLORS[s]}">${dist[s]||''}</div>
+      </div>
+      <span class="histo-n">${dist[s]||''}</span>
+    </div>`).join('');
+
+  // Rows
+  let lastTier = -1;
+  document.getElementById('calib-rows').innerHTML = sorted.map(({ name, score }, idx) => {
+    const tier = getTier(score);
+    const div  = tier.tier !== lastTier
+      ? `<div class="calib-divider">${tier.icon} ${TIER_LABELS[tier.tier]}</div>`
+      : '';
+    lastTier = tier.tier;
+    return `${div}<div class="calib-row" style="animation-delay:${idx*.018}s">
+      <span class="calib-row-name">${name}</span>
+      <span class="calib-row-score" style="color:${TIER_COLORS[tier.tier]}">${score}</span>
+      <span class="calib-row-tier tb-${tier.tier}">${tier.label}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('calib-results-section').classList.remove('hidden');
+}
+
 /* ─── Element refs ──────────────────────────── */
-const screenIntro    = document.getElementById('screen-intro');
-const screenLoading  = document.getElementById('screen-loading');
-const screenQuestion = document.getElementById('screen-question');
-const screenVerdict  = document.getElementById('screen-verdict');
+const screenIntro     = document.getElementById('screen-intro');
+const screenLoading   = document.getElementById('screen-loading');
+const screenQuestion  = document.getElementById('screen-question');
+const screenVerdict   = document.getElementById('screen-verdict');
+const screenCalibrate = document.getElementById('screen-calibrate');
 const activityInput  = document.getElementById('activity-input');
 const qActivityBadge = document.getElementById('q-activity-badge');
 const aiModeBadge    = document.getElementById('ai-mode-badge');
@@ -1031,8 +1233,15 @@ document.addEventListener('keydown', e => {
   if (e.key==='ArrowLeft'  || e.key.toLowerCase()==='n') answer(false);
 });
 
+// Calibration
+document.getElementById('btn-run-calib').addEventListener('click', runCalibration);
+document.getElementById('btn-calib-back').addEventListener('click', () =>
+  transitionTo(() => showScreen(screenIntro))
+);
+
 // Init
 updateKeyUI();
+if (location.hash === '#calibrate') showScreen(screenCalibrate);
 </script>
 </body>
 </html>
