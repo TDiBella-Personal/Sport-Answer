@@ -13,15 +13,12 @@
       --surface2: #1a1a26;
       --border: #2a2a40;
       --accent: #6c63ff;
-      --accent2: #ff6b6b;
       --yes: #22d3a0;
       --no: #ff5c5c;
       --text: #e8e8f0;
       --muted: #7070a0;
       --glow: rgba(108, 99, 255, 0.3);
     }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background: var(--bg);
@@ -35,8 +32,6 @@
       padding: 24px;
       overflow-x: hidden;
     }
-
-    /* ── Animated background grid ── */
     body::before {
       content: '';
       position: fixed;
@@ -57,10 +52,7 @@
     }
 
     /* ── Header ── */
-    .header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
+    .header { text-align: center; margin-bottom: 32px; }
     .header h1 {
       font-size: clamp(2rem, 5vw, 3rem);
       font-weight: 800;
@@ -70,11 +62,7 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .header p {
-      color: var(--muted);
-      margin-top: 8px;
-      font-size: 0.95rem;
-    }
+    .header p { color: var(--muted); margin-top: 8px; font-size: 0.95rem; }
 
     /* ── Card ── */
     .card {
@@ -87,17 +75,15 @@
     }
     .card.fade-out { opacity: 0; transform: translateY(-12px) scale(0.98); }
     .card.fade-in  { animation: fadeIn 0.35s ease forwards; }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(12px) scale(0.98); }
-      to   { opacity: 1; transform: translateY(0)   scale(1); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* ── Intro screen ── */
-    #screen-intro .activity-input-wrap {
-      margin: 28px 0 24px;
-    }
-    #screen-intro label {
+    /* ── Intro ── */
+    .intro-desc { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px; }
+    .activity-input-wrap { margin: 0 0 20px; }
+    .activity-input-wrap label {
       display: block;
       font-size: 0.8rem;
       font-weight: 600;
@@ -119,38 +105,118 @@
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     #activity-input::placeholder { color: var(--muted); font-weight: 400; }
-    #activity-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--glow);
-    }
-    #activity-input.shake {
-      animation: shake 0.4s ease;
-      border-color: var(--no);
-    }
+    #activity-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+    #activity-input.shake { animation: shake 0.4s ease; border-color: var(--no); }
     @keyframes shake {
       0%,100% { transform: translateX(0); }
-      20%      { transform: translateX(-6px); }
-      40%      { transform: translateX(6px); }
-      60%      { transform: translateX(-4px); }
-      80%      { transform: translateX(4px); }
-    }
-
-    .intro-desc {
-      color: var(--muted);
-      font-size: 0.95rem;
-      line-height: 1.6;
-      margin-bottom: 28px;
+      20%     { transform: translateX(-6px); }
+      40%     { transform: translateX(6px); }
+      60%     { transform: translateX(-4px); }
+      80%     { transform: translateX(4px); }
     }
 
     /* ── Intro button grid ── */
-    .intro-btns {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+    .intro-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 420px) { .intro-btns { grid-template-columns: 1fr; } }
+
+    /* ── API Key section ── */
+    .api-key-section {
+      margin-top: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      overflow: hidden;
     }
-    @media (max-width: 420px) {
-      .intro-btns { grid-template-columns: 1fr; }
+    .api-key-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
     }
+    .api-key-header:hover { background: rgba(255,255,255,0.04); }
+    .api-key-status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+    .api-key-status-dot.configured   { background: var(--yes); box-shadow: 0 0 6px rgba(34,211,160,0.5); }
+    .api-key-status-dot.unconfigured { background: var(--muted); }
+    .api-key-header-text {
+      flex: 1;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .api-key-header-text.configured-text { color: var(--yes); }
+    .api-key-chevron {
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      transition: transform 0.2s;
+    }
+    .api-key-chevron.open { transform: rotate(90deg); }
+    .api-key-body {
+      padding: 0 16px 14px;
+      border-top: 1px solid var(--border);
+    }
+    .api-key-body p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 10px;
+      padding-top: 12px;
+    }
+    .api-key-row { display: flex; gap: 8px; }
+    #api-key-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.9rem;
+      padding: 10px 14px;
+      outline: none;
+      font-family: monospace;
+      transition: border-color 0.2s;
+    }
+    #api-key-input:focus { border-color: var(--accent); }
+    #api-key-input::placeholder { color: var(--muted); font-family: inherit; }
+    .btn-save-key {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: filter 0.15s;
+    }
+    .btn-save-key:hover { filter: brightness(1.15); }
+    .btn-clear-key {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-clear-key:hover { border-color: var(--no); color: var(--no); }
+    .api-key-save-confirmation {
+      font-size: 0.78rem;
+      color: var(--yes);
+      margin-top: 8px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .api-key-save-confirmation.visible { opacity: 1; }
 
     /* ── Buttons ── */
     .btn {
@@ -169,66 +235,38 @@
       user-select: none;
     }
     .btn:active { transform: scale(0.96); }
-
     .btn-primary {
       background: linear-gradient(135deg, var(--accent), #9b5de5);
       color: #fff;
-      font-size: 1.05rem;
       box-shadow: 0 4px 24px var(--glow);
     }
     .btn-primary:hover { filter: brightness(1.12); box-shadow: 0 6px 32px var(--glow); }
-
     .btn-ai {
       background: var(--surface2);
       border: 1px solid var(--accent);
       color: var(--accent);
-      font-size: 1.05rem;
     }
-    .btn-ai:hover {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 4px 24px var(--glow);
-    }
-
-    .answer-btns {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-top: 32px;
-    }
+    .btn-ai:hover { background: var(--accent); color: #fff; box-shadow: 0 4px 24px var(--glow); }
+    .answer-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 32px; }
     .btn-yes {
       background: linear-gradient(135deg, #22d3a0, #0aad80);
-      color: #fff;
-      font-size: 1.15rem;
+      color: #fff; font-size: 1.15rem;
       box-shadow: 0 4px 20px rgba(34,211,160,0.25);
     }
     .btn-yes:hover { filter: brightness(1.1); box-shadow: 0 6px 28px rgba(34,211,160,0.35); }
-
     .btn-no {
       background: linear-gradient(135deg, #ff5c5c, #d63031);
-      color: #fff;
-      font-size: 1.15rem;
+      color: #fff; font-size: 1.15rem;
       box-shadow: 0 4px 20px rgba(255,92,92,0.25);
     }
     .btn-no:hover { filter: brightness(1.1); box-shadow: 0 6px 28px rgba(255,92,92,0.35); }
-
-    .btn-restart {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      margin-top: 16px;
-      width: 100%;
-    }
+    .btn-restart { background: var(--surface2); border: 1px solid var(--border); color: var(--text); margin-top: 16px; width: 100%; }
     .btn-restart:hover { background: var(--border); }
 
     /* ── Loading screen ── */
-    #screen-loading {
-      text-align: center;
-      padding: 56px 36px;
-    }
+    #screen-loading { text-align: center; padding: 56px 36px; }
     .spinner {
-      width: 52px;
-      height: 52px;
+      width: 52px; height: 52px;
       border: 3px solid var(--surface2);
       border-top-color: var(--accent);
       border-radius: 50%;
@@ -236,62 +274,18 @@
       margin: 0 auto 28px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .loading-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-    .loading-activity-name {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--text);
-      margin-bottom: 20px;
-      letter-spacing: -0.02em;
-    }
-    .loading-status {
-      color: var(--muted);
-      font-size: 0.9rem;
-      min-height: 1.4em;
-      transition: opacity 0.3s;
-    }
-    .loading-error-section {
-      margin-top: 28px;
-    }
-    .loading-error-section p {
-      color: var(--no);
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-    .loading-error-btns {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
+    .loading-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+    .loading-activity-name { font-size: 1.5rem; font-weight: 800; color: var(--text); margin-bottom: 20px; letter-spacing: -0.02em; }
+    .loading-status { color: var(--muted); font-size: 0.9rem; min-height: 1.4em; transition: opacity 0.3s; }
+    .loading-error-section { margin-top: 28px; }
+    .loading-error-section p { color: var(--no); font-weight: 600; margin-bottom: 16px; font-size: 0.95rem; }
+    .loading-error-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 420px) { .loading-error-btns { grid-template-columns: 1fr; } }
 
     /* ── Progress bar ── */
-    .progress-wrap {
-      margin-bottom: 28px;
-    }
-    .progress-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      color: var(--muted);
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    .progress-track {
-      background: var(--surface2);
-      border-radius: 99px;
-      height: 6px;
-      overflow: hidden;
-    }
+    .progress-wrap { margin-bottom: 28px; }
+    .progress-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 10px; }
+    .progress-track { background: var(--surface2); border-radius: 99px; height: 6px; overflow: hidden; }
     .progress-fill {
       height: 100%;
       border-radius: 99px;
@@ -301,16 +295,9 @@
     }
 
     /* ── Dots ── */
-    .dots {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      margin-top: 12px;
-      flex-wrap: wrap;
-    }
+    .dots { display: flex; gap: 6px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
     .dot {
-      width: 10px;
-      height: 10px;
+      width: 10px; height: 10px;
       border-radius: 50%;
       background: var(--surface2);
       border: 1px solid var(--border);
@@ -321,27 +308,9 @@
     .dot.answered-no  { background: var(--no);  border-color: var(--no); }
 
     /* ── Question ── */
-    .q-number {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
-    .q-text {
-      font-size: clamp(1.05rem, 3vw, 1.3rem);
-      font-weight: 600;
-      line-height: 1.5;
-      color: var(--text);
-    }
-    .q-icon {
-      font-size: 2.8rem;
-      margin-bottom: 16px;
-      display: block;
-    }
-
-    /* ── Activity badge ── */
+    .q-number { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+    .q-text { font-size: clamp(1.05rem, 3vw, 1.3rem); font-weight: 600; line-height: 1.5; color: var(--text); }
+    .q-icon { font-size: 2.8rem; margin-bottom: 16px; display: block; }
     .activity-badge {
       display: inline-block;
       background: var(--surface2);
@@ -354,8 +323,6 @@
       letter-spacing: 0.02em;
       margin-bottom: 24px;
     }
-
-    /* ── AI Mode badge in question screen ── */
     .ai-mode-badge {
       display: inline-flex;
       align-items: center;
@@ -373,9 +340,7 @@
     }
 
     /* ── AI Verdict reveal ── */
-    .ai-verdict-section {
-      margin-top: 28px;
-    }
+    .ai-verdict-section { margin-top: 28px; }
     .ai-verdict-banner {
       padding: 18px 20px;
       border-radius: 14px;
@@ -388,20 +353,9 @@
       transition: opacity 0.35s cubic-bezier(0.34,1.56,0.64,1),
                   transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
     }
-    .ai-verdict-banner.revealed {
-      opacity: 1;
-      transform: scale(1);
-    }
-    .ai-verdict-banner.yes-verdict {
-      background: rgba(34, 211, 160, 0.1);
-      border: 2px solid var(--yes);
-      color: var(--yes);
-    }
-    .ai-verdict-banner.no-verdict {
-      background: rgba(255, 92, 92, 0.1);
-      border: 2px solid var(--no);
-      color: var(--no);
-    }
+    .ai-verdict-banner.revealed { opacity: 1; transform: scale(1); }
+    .ai-verdict-banner.yes-verdict { background: rgba(34,211,160,0.1); border: 2px solid var(--yes); color: var(--yes); }
+    .ai-verdict-banner.no-verdict  { background: rgba(255,92,92,0.1);  border: 2px solid var(--no);  color: var(--no); }
     .ai-reasoning {
       margin-top: 14px;
       color: var(--muted);
@@ -416,85 +370,23 @@
     .ai-reasoning.revealed { opacity: 1; }
 
     /* ── Verdict screen ── */
-    .verdict-icon {
-      font-size: 5rem;
-      display: block;
-      text-align: center;
-      margin-bottom: 8px;
-      animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
-    }
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.5); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-    .verdict-title {
-      text-align: center;
-      font-size: clamp(1.6rem, 5vw, 2.4rem);
-      font-weight: 900;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      margin-bottom: 10px;
-    }
-    .verdict-score {
-      text-align: center;
-      font-size: 1rem;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
+    .verdict-icon { font-size: 5rem; display: block; text-align: center; margin-bottom: 8px; animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+    .verdict-title { text-align: center; font-size: clamp(1.6rem,5vw,2.4rem); font-weight: 900; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 10px; }
+    .verdict-score { text-align: center; font-size: 1rem; color: var(--muted); margin-bottom: 6px; }
     .verdict-score strong { color: var(--text); font-size: 1.3rem; }
-    .ai-credit {
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--accent);
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      margin-bottom: 28px;
-      margin-top: 4px;
-    }
-    .ai-credit.hidden { display: none; }
-
-    /* Score ring */
-    .score-ring-wrap {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 28px;
-    }
-    .score-ring {
-      position: relative;
-      width: 120px;
-      height: 120px;
-    }
+    .ai-credit { text-align: center; font-size: 0.8rem; color: var(--accent); font-weight: 600; letter-spacing: 0.04em; margin-bottom: 28px; margin-top: 4px; }
+    .score-ring-wrap { display: flex; justify-content: center; margin-bottom: 28px; }
+    .score-ring { position: relative; width: 120px; height: 120px; }
     .score-ring svg { transform: rotate(-90deg); }
-    .score-ring-bg { fill: none; stroke: var(--surface2); stroke-width: 10; }
-    .score-ring-fill {
-      fill: none;
-      stroke-width: 10;
-      stroke-linecap: round;
-      transition: stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1);
-    }
-    .score-ring-text {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-    }
-    .score-ring-text .big  { font-size: 2rem; line-height: 1; }
+    .score-ring-bg   { fill: none; stroke: var(--surface2); stroke-width: 10; }
+    .score-ring-fill { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1); }
+    .score-ring-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; }
+    .score-ring-text .big   { font-size: 2rem; line-height: 1; }
     .score-ring-text .small { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
-
-    /* Answer breakdown */
-    .breakdown {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 28px;
-    }
+    .breakdown { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
     .breakdown-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      display: flex; align-items: flex-start; gap: 12px;
       background: var(--surface2);
       border-radius: 10px;
       padding: 10px 14px;
@@ -502,45 +394,24 @@
       border: 1px solid var(--border);
       animation: slideIn 0.3s ease both;
     }
-    @keyframes slideIn {
-      from { opacity:0; transform: translateX(-10px); }
-      to   { opacity:1; transform: translateX(0); }
-    }
-    .breakdown-item .bi-num  { font-size: 0.7rem; font-weight: 700; color: var(--muted); width: 16px; text-align: right; flex-shrink: 0; }
-    .breakdown-item .bi-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .breakdown-item .bi-label { flex: 1; color: var(--text); line-height: 1.4; }
-    .breakdown-item .bi-answer { font-weight: 700; font-size: 0.8rem; letter-spacing: 0.04em; flex-shrink: 0; }
-    .breakdown-item .bi-reasoning {
-      font-size: 0.78rem;
-      color: var(--muted);
-      font-style: italic;
-      margin-top: 3px;
-    }
+    @keyframes slideIn { from { opacity:0; transform: translateX(-10px); } to { opacity:1; transform: translateX(0); } }
+    .bi-num    { font-size: 0.7rem; font-weight: 700; color: var(--muted); width: 16px; text-align: right; flex-shrink: 0; padding-top: 2px; }
+    .bi-dot    { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
     .bi-label-wrap { flex: 1; }
+    .bi-label  { color: var(--text); line-height: 1.4; }
+    .bi-reasoning { font-size: 0.78rem; color: var(--muted); font-style: italic; margin-top: 3px; }
+    .bi-answer { font-weight: 700; font-size: 0.8rem; letter-spacing: 0.04em; flex-shrink: 0; padding-top: 2px; }
 
-    /* Verdict tiers */
+    /* Tier colours */
     .tier-0 .verdict-title { color: var(--muted); }
     .tier-1 .verdict-title { color: var(--yes); }
-    .tier-2 .verdict-title {
-      background: linear-gradient(135deg, #22d3a0, var(--accent));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .tier-3 .verdict-title {
-      background: linear-gradient(135deg, #ffd700, #ff8c00);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
+    .tier-2 .verdict-title { background: linear-gradient(135deg,#22d3a0,var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .tier-3 .verdict-title { background: linear-gradient(135deg,#ffd700,#ff8c00); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 
-    /* Confetti canvas */
     #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
-
-    /* ── Utils ── */
     .hidden { display: none !important; }
 
-    @media (max-width: 480px) {
-      .card { padding: 28px 20px; }
-      .answer-btns { gap: 10px; }
-      .loading-error-btns { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 480px) { .card { padding: 28px 20px; } .answer-btns { gap: 10px; } }
   </style>
 </head>
 <body>
@@ -551,10 +422,10 @@
     <p>10 questions. Definitive verdict.</p>
   </div>
 
-  <!-- ── INTRO SCREEN ── -->
+  <!-- ── INTRO ── -->
   <div class="card fade-in" id="screen-intro">
     <p class="intro-desc">
-      Enter any activity below. Answer the 10 questions yourself — or let Claude research it and decide.
+      Enter any activity. Answer the 10 questions yourself — or let Claude research it and decide.
     </p>
     <div class="activity-input-wrap">
       <label for="activity-input">What's the activity?</label>
@@ -564,9 +435,28 @@
       <button class="btn btn-primary" id="btn-start">Answer Yourself →</button>
       <button class="btn btn-ai"     id="btn-ai">🤖 Let Claude Decide</button>
     </div>
+
+    <!-- API Key management -->
+    <div class="api-key-section" id="api-key-section">
+      <div class="api-key-header" id="api-key-toggle">
+        <div class="api-key-status-dot unconfigured" id="api-key-dot"></div>
+        <span class="api-key-header-text" id="api-key-header-text">Add API key for AI mode</span>
+        <span class="api-key-chevron" id="api-key-chevron">›</span>
+      </div>
+      <div class="api-key-body hidden" id="api-key-body">
+        <p>Your Anthropic API key — stored only in this browser, sent only to Anthropic.<br>
+           Get one at <strong>console.anthropic.com</strong></p>
+        <div class="api-key-row">
+          <input type="password" id="api-key-input" placeholder="sk-ant-api03-…" autocomplete="off" />
+          <button class="btn-save-key" id="btn-save-key">Save</button>
+          <button class="btn-clear-key" id="btn-clear-key">Clear</button>
+        </div>
+        <div class="api-key-save-confirmation" id="api-key-confirmation">✓ API key saved</div>
+      </div>
+    </div>
   </div>
 
-  <!-- ── LOADING SCREEN ── -->
+  <!-- ── LOADING ── -->
   <div class="card hidden" id="screen-loading">
     <div class="spinner"></div>
     <div class="loading-label">Analyzing</div>
@@ -581,15 +471,10 @@
     </div>
   </div>
 
-  <!-- ── QUESTION SCREEN ── -->
+  <!-- ── QUESTION ── -->
   <div class="card hidden" id="screen-question">
-
-    <!-- Manual mode: shows activity name badge -->
     <div class="activity-badge hidden" id="q-activity-badge"></div>
-
-    <!-- AI mode: shows Claude badge -->
-    <div class="ai-mode-badge hidden" id="ai-mode-badge">🤖 Claude's Analysis</div>
-
+    <div class="ai-mode-badge   hidden" id="ai-mode-badge">🤖 Claude's Analysis</div>
     <div class="progress-wrap">
       <div class="progress-meta">
         <span id="q-progress-label">Question 1 of 10</span>
@@ -600,31 +485,25 @@
       </div>
       <div class="dots" id="dots-container"></div>
     </div>
-
-    <span class="q-icon" id="q-icon"></span>
-    <div class="q-number" id="q-number">CRITERION 1</div>
-    <div class="q-text" id="q-text"></div>
-
-    <!-- Manual answer buttons -->
+    <span class="q-icon"   id="q-icon"></span>
+    <div class="q-number"  id="q-number">CRITERION 1</div>
+    <div class="q-text"    id="q-text"></div>
     <div class="answer-btns" id="answer-btns">
       <button class="btn btn-yes" id="btn-yes">👍 Yes</button>
       <button class="btn btn-no"  id="btn-no">👎 No</button>
     </div>
-
-    <!-- AI reveal section (hidden during manual mode) -->
     <div class="ai-verdict-section hidden" id="ai-verdict-section">
       <div class="ai-verdict-banner" id="ai-verdict-banner"></div>
       <div class="ai-reasoning"      id="ai-reasoning"></div>
     </div>
-
   </div>
 
-  <!-- ── VERDICT SCREEN ── -->
+  <!-- ── VERDICT ── -->
   <div class="card hidden" id="screen-verdict">
-    <span class="verdict-icon" id="verdict-icon"></span>
-    <div class="verdict-title" id="verdict-title"></div>
-    <div class="verdict-score"  id="verdict-score"></div>
-    <div class="ai-credit hidden" id="ai-credit">Determined by Claude 🤖</div>
+    <span class="verdict-icon"  id="verdict-icon"></span>
+    <div  class="verdict-title" id="verdict-title"></div>
+    <div  class="verdict-score" id="verdict-score"></div>
+    <div  class="ai-credit hidden" id="ai-credit">Determined by Claude 🤖</div>
     <div class="score-ring-wrap">
       <div class="score-ring">
         <svg viewBox="0 0 120 120" width="120" height="120">
@@ -638,39 +517,31 @@
         </div>
       </div>
     </div>
-    <div class="breakdown"  id="breakdown"></div>
+    <div class="breakdown" id="breakdown"></div>
     <button class="btn btn-primary" id="btn-restart-top">Try Another Activity</button>
   </div>
 </div>
 
 <script>
-/* ─────────────────────────────────────────────
-   Data
-───────────────────────────────────────────── */
+/* ─── Data ─────────────────────────────────── */
 const QUESTIONS = [
-  { icon: '🎯', criterion: 'Criterion 1',  text: 'Does it involve a ball, puck, disc, or similar object central to play?' },
-  { icon: '🦘', criterion: 'Criterion 2',  text: 'Does it require leaving the ground — jumping, leaping, or aerial phases?' },
-  { icon: '⚠️', criterion: 'Criterion 3',  text: 'Does it carry inherent danger or risk of harm beyond normal exertion?' },
-  { icon: '💪', criterion: 'Criterion 4',  text: 'Does it demand significant physical exertion or cardiovascular endurance?' },
-  { icon: '⚔️', criterion: 'Criterion 5',  text: 'Does it involve direct competition against opponents?' },
-  { icon: '🏆', criterion: 'Criterion 6',  text: 'Does it have standardized, objective scoring or win conditions?' },
-  { icon: '🔔', criterion: 'Criterion 7',  text: 'Does it always produce a definitive winner — no ties allowed?' },
-  { icon: '🧠', criterion: 'Criterion 8',  text: 'Does it require strategic decision-making or tactics during play?' },
-  { icon: '👟', criterion: 'Criterion 9',  text: 'Does it require specialized footwear?' },
-  { icon: '🦺', criterion: 'Criterion 10', text: 'Does it have a referee or official who can ruin your day?' },
+  { icon:'🎯', criterion:'Criterion 1',  text:'Does it involve a ball, puck, disc, or similar object central to play?' },
+  { icon:'🦘', criterion:'Criterion 2',  text:'Does it require leaving the ground — jumping, leaping, or aerial phases?' },
+  { icon:'⚠️', criterion:'Criterion 3',  text:'Does it carry inherent danger or risk of harm beyond normal exertion?' },
+  { icon:'💪', criterion:'Criterion 4',  text:'Does it demand significant physical exertion or cardiovascular endurance?' },
+  { icon:'⚔️', criterion:'Criterion 5',  text:'Does it involve direct competition against opponents?' },
+  { icon:'🏆', criterion:'Criterion 6',  text:'Does it have standardized, objective scoring or win conditions?' },
+  { icon:'🔔', criterion:'Criterion 7',  text:'Does it always produce a definitive winner — no ties allowed?' },
+  { icon:'🧠', criterion:'Criterion 8',  text:'Does it require strategic decision-making or tactics during play?' },
+  { icon:'👟', criterion:'Criterion 9',  text:'Does it require specialized footwear?' },
+  { icon:'🦺', criterion:'Criterion 10', text:'Does it have a referee or official who can ruin your day?' },
 ];
-
 const TIERS = [
-  { min: 0,  max: 3,  label: 'Not a Sport', icon: '🚫', ring: '#ff5c5c', tier: 0,
-    quip: a => `Sorry — "${a}" doesn't make the cut.` },
-  { min: 4,  max: 6,  label: 'Sport',        icon: '✅', ring: '#22d3a0', tier: 1,
-    quip: a => `Yep — "${a}" qualifies as a sport.` },
-  { min: 7,  max: 9,  label: 'Legit Sport',  icon: '🔥', ring: '#6c63ff', tier: 2,
-    quip: a => `"${a}" is a legit sport. Respect.` },
-  { min: 10, max: 10, label: 'Elite Sport',  icon: '👑', ring: '#ffd700', tier: 3,
-    quip: a => `"${a}" is an elite sport. Peak athleticism.` },
+  { min:0,  max:3,  label:'Not a Sport', icon:'🚫', ring:'#ff5c5c', tier:0, quip:a=>`Sorry — "${a}" doesn't make the cut.` },
+  { min:4,  max:6,  label:'Sport',        icon:'✅', ring:'#22d3a0', tier:1, quip:a=>`Yep — "${a}" qualifies as a sport.` },
+  { min:7,  max:9,  label:'Legit Sport',  icon:'🔥', ring:'#6c63ff', tier:2, quip:a=>`"${a}" is a legit sport. Respect.` },
+  { min:10, max:10, label:'Elite Sport',  icon:'👑', ring:'#ffd700', tier:3, quip:a=>`"${a}" is an elite sport. Peak athleticism.` },
 ];
-
 const LOADING_MSGS = [
   'Consulting the sports scholars…',
   'Checking rulebooks worldwide…',
@@ -679,51 +550,102 @@ const LOADING_MSGS = [
   'Running the classification algorithm…',
   'Reviewing historical precedent…',
 ];
+const AI_PROMPT = (name) => `You are a sports classification expert. Carefully and accurately analyze the activity "${name}" and answer each of these 10 yes/no questions based on its real-world characteristics.
 
-/* ─────────────────────────────────────────────
-   State
-───────────────────────────────────────────── */
-let activity   = '';
-let current    = 0;
-let answers    = [];
-let isAIMode   = false;
-let aiAnswers  = [];
+For each question provide:
+- true (yes) or false (no)
+- A single concise reasoning sentence (10–18 words)
+
+Questions:
+1. Does it involve a ball, puck, disc, or similar object central to play?
+2. Does it require leaving the ground — jumping, leaping, or aerial phases?
+3. Does it carry inherent danger or risk of harm beyond normal exertion?
+4. Does it demand significant physical exertion or cardiovascular endurance?
+5. Does it involve direct competition against opponents (not just a clock)?
+6. Does it have standardized, objective scoring or win conditions?
+7. Does it always produce a definitive winner — no ties allowed?
+8. Does it require strategic decision-making or tactics during play?
+9. Does it require specialized footwear (cleats, skates, etc.)?
+10. Does it have a referee or official who can penalize or eject players?
+
+Respond ONLY with valid JSON — no markdown, no code fences:
+{"answers":[true,false,...],"reasoning":["Reason 1.","Reason 2.",...]}`;
+
+/* ─── State ─────────────────────────────────── */
+let activity    = '';
+let current     = 0;
+let answers     = [];
+let isAIMode    = false;
+let aiAnswers   = [];
 let aiReasoning = [];
 
-/* ─────────────────────────────────────────────
-   Elements
-───────────────────────────────────────────── */
-const screenIntro    = document.getElementById('screen-intro');
-const screenLoading  = document.getElementById('screen-loading');
-const screenQuestion = document.getElementById('screen-question');
-const screenVerdict  = document.getElementById('screen-verdict');
+/* ─── API Key Storage ───────────────────────── */
+const KEY_STORE = 'sport-answer-api-key';
+const getSavedKey = ()        => localStorage.getItem(KEY_STORE) || '';
+const saveKey     = (k)       => { k.trim() ? localStorage.setItem(KEY_STORE, k.trim()) : localStorage.removeItem(KEY_STORE); };
 
-const activityInput  = document.getElementById('activity-input');
-const btnStart       = document.getElementById('btn-start');
-const btnAI          = document.getElementById('btn-ai');
-const btnYes         = document.getElementById('btn-yes');
-const btnNo          = document.getElementById('btn-no');
-const btnRestartTop  = document.getElementById('btn-restart-top');
+function updateKeyUI() {
+  const key      = getSavedKey();
+  const dot      = document.getElementById('api-key-dot');
+  const text     = document.getElementById('api-key-header-text');
+  const keyInput = document.getElementById('api-key-input');
+  if (key) {
+    dot.className  = 'api-key-status-dot configured';
+    text.textContent = 'API key saved ✓';
+    text.className = 'api-key-header-text configured-text';
+    keyInput.placeholder = '••••••••••••••••••••';
+  } else {
+    dot.className  = 'api-key-status-dot unconfigured';
+    text.textContent = 'Add API key for AI mode';
+    text.className = 'api-key-header-text';
+    keyInput.placeholder = 'sk-ant-api03-…';
+  }
+}
 
-const answerBtns     = document.getElementById('answer-btns');
-const qActivityBadge = document.getElementById('q-activity-badge');
-const aiModeBadge    = document.getElementById('ai-mode-badge');
-const aiVerdictSection = document.getElementById('ai-verdict-section');
-const aiVerdictBanner  = document.getElementById('ai-verdict-banner');
-const aiReasoningEl    = document.getElementById('ai-reasoning');
+/* ─── Direct Anthropic API call ────────────── */
+async function analyzeWithClaude(name) {
+  const apiKey = getSavedKey();
+  if (!apiKey) throw new Error('No API key saved — expand the key section below the buttons.');
 
-const loadingActivityName = document.getElementById('loading-activity-name');
-const loadingStatus       = document.getElementById('loading-status');
-const loadingErrorSection = document.getElementById('loading-error-section');
-const loadingErrorMsg     = document.getElementById('loading-error-msg');
-const btnTryManual        = document.getElementById('btn-try-manual');
-const btnRetryAI          = document.getElementById('btn-retry-ai');
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key':           apiKey,
+      'anthropic-version':   '2023-06-01',
+      'content-type':        'application/json',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model:      'claude-opus-4-6',
+      max_tokens: 1024,
+      messages:   [{ role: 'user', content: AI_PROMPT(name) }],
+    }),
+  });
 
-const aiCreditEl  = document.getElementById('ai-credit');
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    if (resp.status === 401) {
+      saveKey('');
+      updateKeyUI();
+      throw new Error('Invalid API key — please re-enter it.');
+    }
+    throw new Error(err.error?.message || `API error ${resp.status}`);
+  }
 
-/* ─────────────────────────────────────────────
-   Utility
-───────────────────────────────────────────── */
+  const data  = await resp.json();
+  const raw   = data.content[0].text.trim();
+  const match = raw.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error('Unexpected response format from Claude.');
+
+  const parsed = JSON.parse(match[0]);
+  if (!Array.isArray(parsed.answers)   || parsed.answers.length   !== 10 ||
+      !Array.isArray(parsed.reasoning) || parsed.reasoning.length !== 10) {
+    throw new Error('Response structure invalid — try again.');
+  }
+  return parsed;
+}
+
+/* ─── Helpers ───────────────────────────────── */
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 function getActivityValue() {
@@ -737,44 +659,32 @@ function getActivityValue() {
   return val;
 }
 
-/* ─────────────────────────────────────────────
-   Screen management
-───────────────────────────────────────────── */
+/* ─── Screen management ─────────────────────── */
+const SCREENS = () => [screenIntro, screenLoading, screenQuestion, screenVerdict];
+
 function showScreen(el) {
-  [screenIntro, screenLoading, screenQuestion, screenVerdict].forEach(s => {
-    if (s === el) {
-      s.classList.remove('hidden');
-      s.classList.remove('fade-out');
-      s.classList.add('fade-in');
-    } else {
-      s.classList.add('hidden');
-      s.classList.remove('fade-in');
-    }
+  SCREENS().forEach(s => {
+    if (s === el) { s.classList.remove('hidden','fade-out'); s.classList.add('fade-in'); }
+    else          { s.classList.add('hidden'); s.classList.remove('fade-in'); }
   });
 }
-
 function transitionTo(fn) {
-  const active = [screenIntro, screenLoading, screenQuestion, screenVerdict]
-    .find(s => !s.classList.contains('hidden'));
+  const active = SCREENS().find(s => !s.classList.contains('hidden'));
   if (!active) { fn(); return; }
   active.classList.add('fade-out');
-  setTimeout(() => { fn(); }, 300);
+  setTimeout(fn, 300);
 }
 
-/* ─────────────────────────────────────────────
-   Dots & Progress
-───────────────────────────────────────────── */
+/* ─── Dots / Progress ───────────────────────── */
 function buildDots() {
   const c = document.getElementById('dots-container');
   c.innerHTML = '';
   for (let i = 0; i < 10; i++) {
     const d = document.createElement('div');
-    d.className = 'dot';
-    d.id = `dot-${i}`;
+    d.className = 'dot'; d.id = `dot-${i}`;
     c.appendChild(d);
   }
 }
-
 function updateDots() {
   for (let i = 0; i < 10; i++) {
     const d = document.getElementById(`dot-${i}`);
@@ -783,18 +693,12 @@ function updateDots() {
     else if (i === current) d.classList.add('active');
   }
 }
-
 function updateProgress() {
-  const pct = (current / 10) * 100;
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('q-progress-label').textContent = `Question ${current + 1} of 10`;
-  const yesCount = answers.filter(Boolean).length;
-  document.getElementById('q-yes-count').textContent = yesCount === 1 ? '1 yes' : `${yesCount} yes`;
+  document.getElementById('progress-fill').style.width       = (current / 10) * 100 + '%';
+  document.getElementById('q-progress-label').textContent    = `Question ${current + 1} of 10`;
+  const y = answers.filter(Boolean).length;
+  document.getElementById('q-yes-count').textContent         = y === 1 ? '1 yes' : `${y} yes`;
 }
-
-/* ─────────────────────────────────────────────
-   Question renderer
-───────────────────────────────────────────── */
 function renderQuestion() {
   const q = QUESTIONS[current];
   document.getElementById('q-icon').textContent   = q.icon;
@@ -804,20 +708,12 @@ function renderQuestion() {
   updateDots();
 }
 
-/* ─────────────────────────────────────────────
-   Manual Quiz
-───────────────────────────────────────────── */
+/* ─── Manual Quiz ───────────────────────────── */
 function startManualQuiz() {
-  const val = getActivityValue();
-  if (!val) return;
-  activity   = val;
-  current    = 0;
-  answers    = [];
-  isAIMode   = false;
-
+  const val = getActivityValue(); if (!val) return;
+  activity = val; current = 0; answers = []; isAIMode = false;
   transitionTo(() => {
     buildDots();
-    // Restore manual UI
     qActivityBadge.textContent = activity;
     qActivityBadge.classList.remove('hidden');
     aiModeBadge.classList.add('hidden');
@@ -830,13 +726,10 @@ function startManualQuiz() {
 
 function answer(yes) {
   answers.push(yes);
-
   const dot = document.getElementById(`dot-${current}`);
   dot.classList.remove('active');
   dot.classList.add(yes ? 'answered-yes' : 'answered-no');
-
   current++;
-
   if (current < 10) {
     screenQuestion.classList.add('fade-out');
     setTimeout(() => {
@@ -850,88 +743,62 @@ function answer(yes) {
   }
 }
 
-/* ─────────────────────────────────────────────
-   AI Quiz
-───────────────────────────────────────────── */
+/* ─── AI Quiz ───────────────────────────────── */
 async function startAIQuiz() {
-  const val = getActivityValue();
-  if (!val) return;
-  activity  = val;
-  current   = 0;
-  answers   = [];
-  isAIMode  = true;
+  const val = getActivityValue(); if (!val) return;
 
-  // Show loading screen
+  // No key? Open the key panel and bail
+  if (!getSavedKey()) {
+    apiKeyBody.classList.remove('hidden');
+    apiKeyChevron.classList.add('open');
+    document.getElementById('api-key-input').focus();
+    return;
+  }
+
+  activity = val; current = 0; answers = []; isAIMode = true;
+
   loadingActivityName.textContent = `"${activity}"`;
   loadingStatus.textContent = LOADING_MSGS[0];
   loadingErrorSection.classList.add('hidden');
   transitionTo(() => showScreen(screenLoading));
 
-  // Cycle loading messages
   let msgIdx = 0;
   const msgInterval = setInterval(() => {
     msgIdx = (msgIdx + 1) % LOADING_MSGS.length;
     loadingStatus.style.opacity = '0';
-    setTimeout(() => {
-      loadingStatus.textContent = LOADING_MSGS[msgIdx];
-      loadingStatus.style.opacity = '1';
-    }, 200);
+    setTimeout(() => { loadingStatus.textContent = LOADING_MSGS[msgIdx]; loadingStatus.style.opacity = '1'; }, 200);
   }, 2200);
 
   try {
-    const resp = await fetch('/api/analyze', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ activity }),
-    });
-
+    const data = await analyzeWithClaude(activity);
     clearInterval(msgInterval);
-
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err.error || `HTTP ${resp.status}`);
-    }
-
-    const data = await resp.json();
-
-    if (!Array.isArray(data.answers) || data.answers.length !== 10) {
-      throw new Error('Unexpected response from server.');
-    }
-
     aiAnswers   = data.answers;
-    aiReasoning = data.reasoning || Array(10).fill('');
-
-    await sleep(400); // brief pause so loading screen doesn't flash
+    aiReasoning = data.reasoning;
+    await sleep(350);
     buildDots();
     transitionTo(() => runAIReveal());
-
   } catch (err) {
     clearInterval(msgInterval);
-    loadingErrorMsg.textContent = `⚠️ ${err.message || 'Analysis failed. Check your API key and server.'}`;
+    loadingErrorMsg.textContent = `⚠️ ${err.message}`;
     loadingErrorSection.classList.remove('hidden');
     loadingStatus.textContent = '';
   }
 }
 
 async function runAIReveal() {
-  // Set up AI mode UI
   qActivityBadge.classList.add('hidden');
   aiModeBadge.classList.remove('hidden');
   answerBtns.classList.add('hidden');
   aiVerdictSection.classList.remove('hidden');
-
   showScreen(screenQuestion);
 
   for (let i = 0; i < 10; i++) {
     current = i;
-
-    // Reset reveal elements
-    aiVerdictBanner.className = 'ai-verdict-banner';
+    aiVerdictBanner.className   = 'ai-verdict-banner';
     aiVerdictBanner.textContent = '';
-    aiReasoningEl.className = 'ai-reasoning';
-    aiReasoningEl.textContent = '';
+    aiReasoningEl.className     = 'ai-reasoning';
+    aiReasoningEl.textContent   = '';
 
-    // Transition between questions
     if (i > 0) {
       screenQuestion.classList.add('fade-out');
       await sleep(280);
@@ -940,215 +807,180 @@ async function runAIReveal() {
       await sleep(50);
       screenQuestion.classList.remove('fade-in');
     }
-
     renderQuestion();
-
-    // Let the question be read
     await sleep(750);
 
-    // Reveal YES / NO with a pop
     const yes = aiAnswers[i];
     aiVerdictBanner.textContent = yes ? '✓  YES' : '✗  NO';
     aiVerdictBanner.classList.add('revealed', yes ? 'yes-verdict' : 'no-verdict');
 
-    // Update tracking state
     answers.push(yes);
-    const dot = document.getElementById(`dot-${i}`);
-    dot.className = 'dot ' + (yes ? 'answered-yes' : 'answered-no');
-    const yesCount = answers.filter(Boolean).length;
-    document.getElementById('q-yes-count').textContent =
-      yesCount === 1 ? '1 yes' : `${yesCount} yes`;
+    document.getElementById(`dot-${i}`).className = 'dot ' + (yes ? 'answered-yes' : 'answered-no');
+    const y = answers.filter(Boolean).length;
+    document.getElementById('q-yes-count').textContent = y === 1 ? '1 yes' : `${y} yes`;
     document.getElementById('progress-fill').style.width = ((i + 1) / 10) * 100 + '%';
 
     await sleep(380);
-
-    // Reveal reasoning
-    if (aiReasoning[i]) {
-      aiReasoningEl.textContent = aiReasoning[i];
-      aiReasoningEl.classList.add('revealed');
-    }
-
+    if (aiReasoning[i]) { aiReasoningEl.textContent = aiReasoning[i]; aiReasoningEl.classList.add('revealed'); }
     await sleep(1700);
   }
 
-  // Restore UI before verdict
   aiModeBadge.classList.add('hidden');
   aiVerdictSection.classList.add('hidden');
   answerBtns.classList.remove('hidden');
   qActivityBadge.classList.remove('hidden');
-
   transitionTo(() => showVerdict());
 }
 
-/* ─────────────────────────────────────────────
-   Verdict
-───────────────────────────────────────────── */
-function getTier(score) {
-  return TIERS.find(t => score >= t.min && score <= t.max);
-}
+/* ─── Verdict ───────────────────────────────── */
+function getTier(score) { return TIERS.find(t => score >= t.min && score <= t.max); }
 
 function showVerdict() {
   const score = answers.filter(Boolean).length;
   const tier  = getTier(score);
-
   screenVerdict.className = `card fade-in tier-${tier.tier}`;
-
   document.getElementById('verdict-icon').textContent  = tier.icon;
   document.getElementById('verdict-title').textContent = tier.label;
-  document.getElementById('verdict-score').innerHTML   =
-    `<strong>${score}</strong> out of 10 — ${tier.quip(activity)}`;
+  document.getElementById('verdict-score').innerHTML   = `<strong>${score}</strong> out of 10 — ${tier.quip(activity)}`;
   document.getElementById('ring-score').textContent    = score;
-
-  // Show/hide AI credit line
-  if (isAIMode) {
-    aiCreditEl.classList.remove('hidden');
-  } else {
-    aiCreditEl.classList.add('hidden');
-  }
-
+  document.getElementById('ai-credit').classList.toggle('hidden', !isAIMode);
   showScreen(screenVerdict);
 
-  // Animate ring
-  const circumference = 314;
-  const offset = circumference - (score / 10) * circumference;
   const ringEl = document.getElementById('ring-fill');
   ringEl.style.stroke = tier.ring;
-  ringEl.style.strokeDashoffset = circumference;
-  setTimeout(() => { ringEl.style.strokeDashoffset = offset; }, 50);
+  ringEl.style.strokeDashoffset = 314;
+  setTimeout(() => { ringEl.style.strokeDashoffset = 314 - (score / 10) * 314; }, 50);
 
-  // Build breakdown
   const breakdown = document.getElementById('breakdown');
   breakdown.innerHTML = '';
   QUESTIONS.forEach((q, i) => {
-    const yes   = answers[i];
-    const item  = document.createElement('div');
+    const yes  = answers[i];
+    const item = document.createElement('div');
     item.className = 'breakdown-item';
     item.style.animationDelay = `${i * 0.05}s`;
-
     const reasoning = (isAIMode && aiReasoning[i])
       ? `<div class="bi-reasoning">${aiReasoning[i]}</div>` : '';
-
     item.innerHTML = `
       <span class="bi-num">${i+1}</span>
       <span class="bi-dot" style="background:${yes ? 'var(--yes)' : 'var(--no)'}"></span>
-      <span class="bi-label-wrap">
-        <span class="bi-label">${q.text}</span>
-        ${reasoning}
-      </span>
-      <span class="bi-answer" style="color:${yes ? 'var(--yes)' : 'var(--no)'}">${yes ? 'YES' : 'NO'}</span>
-    `;
+      <span class="bi-label-wrap"><span class="bi-label">${q.text}</span>${reasoning}</span>
+      <span class="bi-answer" style="color:${yes ? 'var(--yes)' : 'var(--no)'}">${yes ? 'YES' : 'NO'}</span>`;
     breakdown.appendChild(item);
   });
-
   if (score >= 7) launchConfetti(tier.ring);
 }
 
-/* ─────────────────────────────────────────────
-   Restart
-───────────────────────────────────────────── */
+/* ─── Restart ───────────────────────────────── */
 function restart() {
-  isAIMode    = false;
-  aiAnswers   = [];
-  aiReasoning = [];
-  transitionTo(() => {
-    activityInput.value = '';
-    showScreen(screenIntro);
-    activityInput.focus();
-  });
+  isAIMode = false; aiAnswers = []; aiReasoning = [];
+  transitionTo(() => { activityInput.value = ''; showScreen(screenIntro); activityInput.focus(); });
 }
 
-/* ─────────────────────────────────────────────
-   Confetti
-───────────────────────────────────────────── */
+/* ─── Confetti ──────────────────────────────── */
 function launchConfetti(color) {
   const canvas = document.getElementById('confetti-canvas');
   const ctx    = canvas.getContext('2d');
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  const colors = [color, '#fff', '#6c63ff', '#ffd700', '#22d3a0'];
-  const pieces = Array.from({ length: 120 }, () => ({
-    x: Math.random() * canvas.width,
-    y: -20 - Math.random() * 200,
-    r: 4 + Math.random() * 6,
-    d: 2 + Math.random() * 3,
-    color: colors[Math.floor(Math.random() * colors.length)],
-    tilt: Math.random() * 360,
-    spin: (Math.random() - 0.5) * 6,
-    shape: Math.random() > 0.5 ? 'rect' : 'circle',
-    w: 6 + Math.random() * 10,
-    h: 4 + Math.random() * 8,
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  const colors = [color,'#fff','#6c63ff','#ffd700','#22d3a0'];
+  const pieces = Array.from({length:120},()=>({
+    x:Math.random()*canvas.width, y:-20-Math.random()*200,
+    r:4+Math.random()*6, d:2+Math.random()*3,
+    color:colors[Math.floor(Math.random()*colors.length)],
+    tilt:Math.random()*360, spin:(Math.random()-.5)*6,
+    shape:Math.random()>.5?'rect':'circle', w:6+Math.random()*10, h:4+Math.random()*8,
   }));
-
-  let frame;
-  let ticks = 0;
+  let frame, ticks=0;
   function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    pieces.forEach(p => {
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.tilt * Math.PI / 180);
-      ctx.fillStyle = p.color;
-      ctx.globalAlpha = Math.max(0, 1 - ticks / 180);
-      if (p.shape === 'rect') {
-        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-      } else {
-        ctx.beginPath();
-        ctx.arc(0, 0, p.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-      p.y    += p.d;
-      p.tilt += p.spin;
-      p.x    += Math.sin(ticks * 0.02 + p.r) * 0.8;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.tilt*Math.PI/180);
+      ctx.fillStyle=p.color; ctx.globalAlpha=Math.max(0,1-ticks/180);
+      if(p.shape==='rect') ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      else { ctx.beginPath(); ctx.arc(0,0,p.r,0,Math.PI*2); ctx.fill(); }
+      ctx.restore(); p.y+=p.d; p.tilt+=p.spin; p.x+=Math.sin(ticks*.02+p.r)*.8;
     });
-    ticks++;
-    if (ticks < 200) frame = requestAnimationFrame(draw);
-    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ticks++; if(ticks<200) frame=requestAnimationFrame(draw); else ctx.clearRect(0,0,canvas.width,canvas.height);
   }
-  cancelAnimationFrame(frame);
-  draw();
+  cancelAnimationFrame(frame); draw();
 }
 
-/* ─────────────────────────────────────────────
-   Event Listeners
-───────────────────────────────────────────── */
-btnStart.addEventListener('click', startManualQuiz);
-btnAI.addEventListener('click', startAIQuiz);
+/* ─── Element refs ──────────────────────────── */
+const screenIntro    = document.getElementById('screen-intro');
+const screenLoading  = document.getElementById('screen-loading');
+const screenQuestion = document.getElementById('screen-question');
+const screenVerdict  = document.getElementById('screen-verdict');
+const activityInput  = document.getElementById('activity-input');
+const qActivityBadge = document.getElementById('q-activity-badge');
+const aiModeBadge    = document.getElementById('ai-mode-badge');
+const answerBtns     = document.getElementById('answer-btns');
+const aiVerdictSection  = document.getElementById('ai-verdict-section');
+const aiVerdictBanner   = document.getElementById('ai-verdict-banner');
+const aiReasoningEl     = document.getElementById('ai-reasoning');
+const loadingActivityName = document.getElementById('loading-activity-name');
+const loadingStatus       = document.getElementById('loading-status');
+const loadingErrorSection = document.getElementById('loading-error-section');
+const loadingErrorMsg     = document.getElementById('loading-error-msg');
+const apiKeyBody    = document.getElementById('api-key-body');
+const apiKeyChevron = document.getElementById('api-key-chevron');
 
-activityInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') startManualQuiz();
-});
+/* ─── Event Listeners ───────────────────────── */
+document.getElementById('btn-start').addEventListener('click', startManualQuiz);
+document.getElementById('btn-ai').addEventListener('click', startAIQuiz);
+activityInput.addEventListener('keydown', e => { if (e.key==='Enter') startManualQuiz(); });
+document.getElementById('btn-yes').addEventListener('click', () => answer(true));
+document.getElementById('btn-no').addEventListener('click',  () => answer(false));
+document.getElementById('btn-restart-top').addEventListener('click', restart);
 
-btnYes.addEventListener('click', () => answer(true));
-btnNo.addEventListener('click',  () => answer(false));
-btnRestartTop.addEventListener('click', restart);
-
-// Error screen actions
-btnTryManual.addEventListener('click', () => {
+document.getElementById('btn-try-manual').addEventListener('click', () => {
   isAIMode = false;
   transitionTo(() => {
-    buildDots();
+    buildDots(); answers=[]; current=0;
     qActivityBadge.textContent = activity;
     qActivityBadge.classList.remove('hidden');
     aiModeBadge.classList.add('hidden');
     answerBtns.classList.remove('hidden');
     aiVerdictSection.classList.add('hidden');
-    answers  = [];
-    current  = 0;
-    renderQuestion();
-    showScreen(screenQuestion);
+    renderQuestion(); showScreen(screenQuestion);
   });
 });
-btnRetryAI.addEventListener('click', startAIQuiz);
+document.getElementById('btn-retry-ai').addEventListener('click', startAIQuiz);
+
+// API key panel toggle
+document.getElementById('api-key-toggle').addEventListener('click', () => {
+  const open = !apiKeyBody.classList.contains('hidden');
+  apiKeyBody.classList.toggle('hidden', open);
+  apiKeyChevron.classList.toggle('open', !open);
+});
+
+// Save key
+document.getElementById('btn-save-key').addEventListener('click', () => {
+  const val = document.getElementById('api-key-input').value;
+  saveKey(val);
+  updateKeyUI();
+  document.getElementById('api-key-input').value = '';
+  const conf = document.getElementById('api-key-confirmation');
+  conf.classList.add('visible');
+  setTimeout(() => conf.classList.remove('visible'), 2000);
+});
+document.getElementById('api-key-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btn-save-key').click();
+});
+
+// Clear key
+document.getElementById('btn-clear-key').addEventListener('click', () => {
+  saveKey(''); updateKeyUI();
+  document.getElementById('api-key-input').value = '';
+});
 
 // Keyboard shortcuts (manual mode only)
 document.addEventListener('keydown', e => {
-  if (isAIMode) return;
-  if (screenQuestion.classList.contains('hidden')) return;
-  if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'y') answer(true);
-  if (e.key === 'ArrowLeft'  || e.key.toLowerCase() === 'n') answer(false);
+  if (isAIMode || screenQuestion.classList.contains('hidden')) return;
+  if (e.key==='ArrowRight' || e.key.toLowerCase()==='y') answer(true);
+  if (e.key==='ArrowLeft'  || e.key.toLowerCase()==='n') answer(false);
 });
+
+// Init
+updateKeyUI();
 </script>
 </body>
 </html>
