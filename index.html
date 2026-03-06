@@ -32,6 +32,29 @@
       padding: 24px;
       overflow-x: hidden;
     }
+    /* ── Activity background image ── */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 1.4s ease;
+      will-change: opacity;
+    }
+    .bg-layer.active { opacity: 1; }
+    #bg-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 4, 12, 0.72);
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.9s ease;
+    }
+    #bg-overlay.active { opacity: 1; }
+
     body::before {
       content: '';
       position: fixed;
@@ -41,12 +64,12 @@
         linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
-      z-index: 0;
+      z-index: 2;
     }
 
     .app {
       position: relative;
-      z-index: 1;
+      z-index: 3;
       width: 100%;
       max-width: 640px;
     }
@@ -416,6 +439,9 @@
 </head>
 <body>
 <canvas id="confetti-canvas"></canvas>
+<div class="bg-layer" id="bg-a"></div>
+<div class="bg-layer" id="bg-b"></div>
+<div id="bg-overlay"></div>
 <div class="app">
   <div class="header">
     <h1>Is It a Sport?</h1>
@@ -570,6 +596,27 @@ Questions:
 
 Respond ONLY with valid JSON — no markdown, no code fences:
 {"answers":[true,false,...],"reasoning":["Reason 1.","Reason 2.",...]}`;
+
+/* ─── Background Image ──────────────────────── */
+let bgCurrent  = 'a';
+let bgDebounce = null;
+
+function setBackground(query) {
+  const url = `https://source.unsplash.com/1920x1080/?${encodeURIComponent(query)}`;
+  const nextId = bgCurrent === 'a' ? 'bg-b' : 'bg-a';
+  const currId = bgCurrent === 'a' ? 'bg-a' : 'bg-b';
+  const nextEl = document.getElementById(nextId);
+  const overlay = document.getElementById('bg-overlay');
+  const img = new Image();
+  img.onload = () => {
+    nextEl.style.backgroundImage = `url("${img.src}")`;
+    nextEl.classList.add('active');
+    document.getElementById(currId).classList.remove('active');
+    overlay.classList.add('active');
+    bgCurrent = nextId === 'bg-a' ? 'a' : 'b';
+  };
+  img.src = url;
+}
 
 /* ─── State ─────────────────────────────────── */
 let activity    = '';
@@ -927,6 +974,11 @@ const apiKeyChevron = document.getElementById('api-key-chevron');
 document.getElementById('btn-start').addEventListener('click', startManualQuiz);
 document.getElementById('btn-ai').addEventListener('click', startAIQuiz);
 activityInput.addEventListener('keydown', e => { if (e.key==='Enter') startManualQuiz(); });
+activityInput.addEventListener('input', () => {
+  clearTimeout(bgDebounce);
+  const val = activityInput.value.trim();
+  if (val.length >= 3) bgDebounce = setTimeout(() => setBackground(val), 700);
+});
 document.getElementById('btn-yes').addEventListener('click', () => answer(true));
 document.getElementById('btn-no').addEventListener('click',  () => answer(false));
 document.getElementById('btn-restart-top').addEventListener('click', restart);
